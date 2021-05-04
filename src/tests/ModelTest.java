@@ -14,6 +14,7 @@ class ModelTest {
         model = new Model();
         //create login for all methods to use
         model.createLogin("mail", "pass");
+        model.login("mail", "pass");
     }
 
     @AfterEach
@@ -45,8 +46,6 @@ class ModelTest {
 
     @Test
     void changePassword() {
-        model.login("mail", "pass");
-
         //change password and try login with new password
         assertTrue(model.changePassword("passNEW"));
         assertTrue(model.login("mail", "passNEW"));
@@ -65,7 +64,18 @@ class ModelTest {
 
     @Test
     void createToDo() {
-        model.login("mail", "pass");
         assertTrue(model.createToDo("title", "HIGH", "description"));
+    }
+
+    @Test
+    void getToDo() {
+        model.createToDo("todo1", "HIGH", "description1");
+        model.createToDo("todo2", "MEDIUM", "description2");
+
+        assertEquals("todo1", model.getToDo(1).getTitle());
+        assertEquals("todo2", model.getToDo(2).getTitle());
+        assertEquals(TodoItem.Priority.HIGH, model.getToDo(1).getPriority());
+        assertNotEquals(TodoItem.Priority.HIGH, model.getToDo(2).getPriority());
+        assertNull(model.getToDo(3));
     }
 }

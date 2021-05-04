@@ -52,10 +52,6 @@ public class Account {
                 '}';
     }
 
-    public void addTodoItem(TodoItem todoItem) {
-        this.todoList.put(todoItem.getId(), todoItem);
-    }
-
     /**
      * Check if mailAddress is correct
      *
@@ -74,5 +70,24 @@ public class Account {
      */
     public boolean validPassword(String password) {
         return getPassword().equals(password);
+    }
+
+    /**
+     * Add a new todoItem to the account
+     *
+     * @param todoItem is the item added to the account
+     */
+    public void addTodoItem(TodoItem todoItem) {
+        todoList.put(todoItem.getId(), todoItem);
+    }
+
+    /**
+     * Return the TodoItem of the given id
+     *
+     * @param todoId of the item
+     * @return TodoItem of the provided id
+     */
+    public TodoItem getTodoItem(int todoId) {
+        return todoList.get(todoId);
     }
 }

@@ -88,4 +88,18 @@ public class Model {
         //TODO: Exception handling, return false
         return true;
     }
+
+    /**
+     * Return the current account's TodoItem with the provided id
+     *
+     * @param todoId of the item
+     * @return the current account's TodoItem of the provided id
+     */
+    protected TodoItem getToDo(int todoId) {
+        Account currentAccount = getCurrentAccount();
+        if (currentAccount != null) {
+            return currentAccount.getTodoItem(todoId);
+        }
+        return null;
+    }
 }
