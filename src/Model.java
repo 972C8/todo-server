@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class Model {
@@ -23,7 +22,7 @@ public class Model {
     protected boolean login(String mailAddress, String password) {
         for (Map.Entry<Integer, Account> accountEntry : accounts.entrySet()) {
             Account account = accountEntry.getValue();
-            if (mailAddress.equals(account.getMailAddress()) && password.equals(account.getPassword())) {
+            if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
                 //TODO: do actual login
                 setCurrentAccountId(account.getId());
                 return true;

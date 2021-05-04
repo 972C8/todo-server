@@ -55,4 +55,24 @@ public class Account {
     public void addTodoItem(TodoItem todoItem) {
         this.todoList.put(todoItem.getId(), todoItem);
     }
+
+    /**
+     * Check if mailAddress is correct
+     *
+     * @param mailAddress is checked
+     * @return true if mailAddress is correct
+     */
+    public boolean validMailAddress(String mailAddress) {
+        return getMailAddress().equals(mailAddress);
+    }
+
+    /**
+     * Check if password is correct
+     *
+     * @param password is checked
+     * @return true if password is correct
+     */
+    public boolean validPassword(String password) {
+        return getPassword().equals(password);
+    }
 }
