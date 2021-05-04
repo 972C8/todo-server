@@ -40,6 +40,13 @@ public class TodoItem {
         this.id = id;
     }
 
+    /**
+     * Reset the static nextId of TodoItem
+     */
+    public static void resetNextId() {
+        TodoItem.nextId = 1;
+    }
+
     public String getTitle() {
         return title;
     }

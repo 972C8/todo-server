@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class ModelTest {
 
     private Model model;
-    private Account account;
 
     @BeforeEach
     void setUp() {
@@ -22,6 +21,21 @@ class ModelTest {
     void tearDown() {
         //Print all accounts for the end of each method
         System.out.println(model.getAccounts());
+
+        //Reset the data after each method test
+        resetData();
+    }
+
+    /**
+     * Reset data after each method test.
+     *
+     * This is important as static ids are tracked to ensure unique identifiers.
+     * They must be reset for each new test to avoid data errors.
+     */
+    void resetData() {
+        model.resetAccounts();
+        Account.resetNextId();
+        TodoItem.resetNextId();
     }
 
     @Test
@@ -91,11 +105,19 @@ class ModelTest {
     void deleteToDo() {
         prepareToDoItems();
 
-        //TODO: Fix bug - currently returns false even if deleting was successful
-        //assertNotNull(model.getToDo(2));
-        //assertTrue(model.deleteToDo(2));
+        assertNotNull(model.getToDo(2));
+        assertTrue(model.deleteToDo(2));
         assertNull(model.getToDo(2));
 
         assertFalse(model.deleteToDo(-3));
+    }
+
+    @Test
+    void listToDos() {
+        assertTrue(model.listToDos().isEmpty());
+
+        prepareToDoItems();
+        assertNotNull(model.listToDos());
+        assertEquals(3, model.listToDos().size());
     }
 }

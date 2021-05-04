@@ -50,6 +50,13 @@ public class Model {
     }
 
     /**
+     * Reset the accounts HashMap
+     */
+    protected void resetAccounts() {
+        accounts = new HashMap<>();
+    }
+
+    /**
      * Change password of the current account
      *
      * @param newPassword is the new password
@@ -104,5 +111,17 @@ public class Model {
             return currentAccount.deleteTodoItem(todoId);
         }
         return false;
+    }
+
+    /**
+     * Return the current account's todolist
+     *
+     * @return a HashMap containing the account's todos
+     */
+    protected HashMap<Integer, TodoItem> listToDos() {
+        if (currentAccount != null) {
+            return currentAccount.getTodoList();
+        }
+        return null;
     }
 }

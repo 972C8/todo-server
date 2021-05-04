@@ -43,6 +43,13 @@ public class Account {
         this.id = id;
     }
 
+    /**
+     * Reset the static nextId of Account
+     */
+    public static void resetNextId() {
+        Account.nextId = 1;
+    }
+
     @Override
     public String toString() {
         return "Account{" +
@@ -103,5 +110,14 @@ public class Account {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Return the account's todolist
+     *
+     * @return a HashMap containing the account's todos
+     */
+    public HashMap<Integer, TodoItem> getTodoList() {
+        return todoList;
     }
 }
