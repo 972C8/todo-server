@@ -90,4 +90,18 @@ public class Account {
     public TodoItem getTodoItem(int todoId) {
         return todoList.get(todoId);
     }
+
+    /**
+     * Delete the TodoItem of the given id
+     *
+     * @param todoId of the item
+     * @return true if item was deleted
+     */
+    public boolean deleteTodoItem(int todoId) {
+        if (todoList.get(todoId) != null) {
+            todoList.remove(todoId);
+            return true;
+        }
+        return false;
+    }
 }

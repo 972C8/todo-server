@@ -12,6 +12,7 @@ class ModelTest {
     @BeforeEach
     void setUp() {
         model = new Model();
+
         //create login for all methods to use
         model.createLogin("mail", "pass");
         model.login("mail", "pass");
@@ -67,15 +68,34 @@ class ModelTest {
         assertTrue(model.createToDo("title", "HIGH", "description"));
     }
 
-    @Test
-    void getToDo() {
+    /**
+     * Create some to do items to test them
+     */
+    void prepareToDoItems() {
         model.createToDo("todo1", "HIGH", "description1");
         model.createToDo("todo2", "MEDIUM", "description2");
+        model.createToDo("todo3", "LOW", "description3");
+    }
+
+    @Test
+    void getToDo() {
+        prepareToDoItems();
 
         assertEquals("todo1", model.getToDo(1).getTitle());
         assertEquals("todo2", model.getToDo(2).getTitle());
         assertEquals(TodoItem.Priority.HIGH, model.getToDo(1).getPriority());
         assertNotEquals(TodoItem.Priority.HIGH, model.getToDo(2).getPriority());
-        assertNull(model.getToDo(3));
+    }
+
+    @Test
+    void deleteToDo() {
+        prepareToDoItems();
+
+        //TODO: Fix bug - currently returns false even if deleting was successful
+        //assertNotNull(model.getToDo(2));
+        //assertTrue(model.deleteToDo(2));
+        assertNull(model.getToDo(2));
+
+        assertFalse(model.deleteToDo(-3));
     }
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 public class Model {
 
     private HashMap<Integer, Account> accounts = new HashMap<>();
-    private static int currentAccountId = 0;
+    private static Account currentAccount;
 
     /**
      * Create new account from provided credentials.
@@ -24,7 +24,7 @@ public class Model {
             Account account = accountEntry.getValue();
             if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
                 //TODO: do actual login
-                setCurrentAccountId(account.getId());
+                setCurrentAccount(account);
                 return true;
             }
         }
@@ -37,19 +37,12 @@ public class Model {
     }
 
     /**
-     * Set a new current account id
+     * Set a new current account
      *
-     * @param newAccountId is the new current account id
+     * @param newAccount is the new current account
      */
-    protected void setCurrentAccountId(int newAccountId) {
-        currentAccountId = newAccountId;
-    }
-
-    protected Account getCurrentAccount() {
-        if (currentAccountId != 0) {
-            return accounts.get(currentAccountId);
-        }
-        return null;
+    protected void setCurrentAccount(Account newAccount) {
+        currentAccount = newAccount;
     }
 
     protected HashMap<Integer, Account> getAccounts() {
@@ -63,7 +56,6 @@ public class Model {
      * @return true if password was changed successfully
      */
     protected boolean changePassword(String newPassword) {
-        Account currentAccount = getCurrentAccount();
         if (currentAccount != null) {
             currentAccount.setPassword(newPassword);
         }
@@ -80,7 +72,6 @@ public class Model {
      * @return true if to do item is created and added successfully
      */
     protected boolean createToDo(String title, String priority, String description) {
-        Account currentAccount = getCurrentAccount();
         if (currentAccount != null) {
             currentAccount.addTodoItem(new TodoItem(title, description, priority));
         }
@@ -96,10 +87,22 @@ public class Model {
      * @return the current account's TodoItem of the provided id
      */
     protected TodoItem getToDo(int todoId) {
-        Account currentAccount = getCurrentAccount();
         if (currentAccount != null) {
             return currentAccount.getTodoItem(todoId);
         }
         return null;
+    }
+
+    /**
+     * Delete the current account's TodoItem with the provided id
+     *
+     * @param todoId of the item
+     * @return true if item was deleted
+     */
+    protected boolean deleteToDo(int todoId) {
+        if (currentAccount != null) {
+            return currentAccount.deleteTodoItem(todoId);
+        }
+        return false;
     }
 }
