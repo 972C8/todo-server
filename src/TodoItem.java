@@ -1,5 +1,9 @@
 public class TodoItem {
 
+    //Static to have same variable over all objects
+    //Tracks the item ids to ensure a unique identifier
+    private static int nextId = 1;
+
     private int id;
     private String title;
     private String description;
@@ -19,11 +23,10 @@ public class TodoItem {
         }
     }
 
-    public TodoItem(int id, String title, String description, Priority priority) {
-        this.id = id;
+    public TodoItem(String title, String description, String priority) {
         this.title = title;
         this.description = description;
-        this.priority = Priority.LOW;
+        this.priority = Priority.valueOf(priority);
     }
 
     public int getId() {

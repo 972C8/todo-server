@@ -45,11 +45,15 @@ public class Model {
         currentAccountId = newAccountId;
     }
 
-    private Account getCurrentAccount() {
+    protected Account getCurrentAccount() {
         if (currentAccountId != 0) {
             return accounts.get(currentAccountId);
         }
         return null;
+    }
+
+    protected HashMap<Integer, Account> getAccounts() {
+        return accounts;
     }
 
     /**
@@ -60,9 +64,26 @@ public class Model {
      */
     protected boolean changePassword(String newPassword) {
         Account currentAccount = getCurrentAccount();
-        assert currentAccount != null;
-        currentAccount.setPassword(newPassword);
-        accounts.put(currentAccountId, currentAccount);
+        if (currentAccount != null) {
+            currentAccount.setPassword(newPassword);
+        }
+        //TODO: Exception handling, return false
+        return true;
+    }
+
+    /**
+     * Create a new to do item and add it to the account
+     *
+     * @param title       of the to do item
+     * @param priority    of the to do item
+     * @param description of the to do item
+     * @return true if to do item is created and added successfully
+     */
+    protected boolean createToDo(String title, String priority, String description) {
+        Account currentAccount = getCurrentAccount();
+        if (currentAccount != null) {
+            currentAccount.addTodoItem(new TodoItem(title, description, priority));
+        }
 
         //TODO: Exception handling, return false
         return true;

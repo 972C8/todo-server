@@ -12,10 +12,14 @@ class ModelTest {
     @BeforeEach
     void setUp() {
         model = new Model();
+        //create login for all methods to use
+        model.createLogin("mail", "pass");
     }
 
     @AfterEach
     void tearDown() {
+        //Print all accounts for the end of each method
+        System.out.println(model.getAccounts());
     }
 
     @Test
@@ -25,14 +29,13 @@ class ModelTest {
 
     @Test
     void login() {
-        model.createLogin("mail1", "pass1");
 
         //Must return true as login is valid
-        assertTrue(model.login("mail1", "pass1"));
+        assertTrue(model.login("mail", "pass"));
 
         //Must return false as login is invalid
-        assertFalse(model.login("mail1", "pass2"));
-        assertFalse(model.login("mail2", "pass1"));
+        assertFalse(model.login("mail", "passWRONG"));
+        assertFalse(model.login("mailWRONG", "pass"));
     }
 
     @Test
@@ -42,12 +45,27 @@ class ModelTest {
 
     @Test
     void changePassword() {
-        model.createLogin("mail1", "pass1");
-        model.login("mail1", "pass1");
+        model.login("mail", "pass");
 
         //change password and try login with new password
-        assertTrue(model.changePassword("pass323"));
-        assertTrue(model.login("mail1", "pass323"));
+        assertTrue(model.changePassword("passNEW"));
+        assertTrue(model.login("mail", "passNEW"));
         assertFalse(model.login("mail1", "passWRONG"));
+
+        model.createLogin("mail1", "pass1");
+        model.createLogin("mail5", "pass5");
+        model.createLogin("mail10", "pass10");
+        model.login("mail5", "pass5");
+        System.out.println(model.getAccounts());
+        model.changePassword("passNEW");
+        model.login("mail1", "pass1");
+        model.changePassword("pass1NEW");
+        System.out.println(model.getAccounts());
+    }
+
+    @Test
+    void createToDo() {
+        model.login("mail", "pass");
+        assertTrue(model.createToDo("title", "HIGH", "description"));
     }
 }
