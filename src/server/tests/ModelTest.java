@@ -1,6 +1,9 @@
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.Account;
+import server.Model;
+import server.TodoItem;
 
 import static org.junit.jupiter.api.Assertions.*;
 

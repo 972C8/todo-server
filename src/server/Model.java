@@ -1,3 +1,5 @@
+package server;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,14 +14,14 @@ public class Model {
      * @param mailAddress is the username
      * @param password    is the password
      */
-    protected boolean createLogin(String mailAddress, String password) {
+    public boolean createLogin(String mailAddress, String password) {
         //TODO: Check mail and password for correctness (regex), return false if incorrect
         Account account = new Account(mailAddress, password);
         accounts.put(account.getId(), account);
         return true;
     }
 
-    protected boolean login(String mailAddress, String password) {
+    public boolean login(String mailAddress, String password) {
         for (Map.Entry<Integer, Account> accountEntry : accounts.entrySet()) {
             Account account = accountEntry.getValue();
             if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
@@ -31,7 +33,7 @@ public class Model {
         return false;
     }
 
-    protected boolean logout() {
+    public boolean logout() {
         //TODO: logout functionality
         return true;
     }
@@ -41,18 +43,18 @@ public class Model {
      *
      * @param newAccount is the new current account
      */
-    protected void setCurrentAccount(Account newAccount) {
+    private void setCurrentAccount(Account newAccount) {
         currentAccount = newAccount;
     }
 
-    protected HashMap<Integer, Account> getAccounts() {
+    public HashMap<Integer, Account> getAccounts() {
         return accounts;
     }
 
     /**
      * Reset the accounts HashMap
      */
-    protected void resetAccounts() {
+    public void resetAccounts() {
         accounts = new HashMap<>();
     }
 
@@ -62,7 +64,7 @@ public class Model {
      * @param newPassword is the new password
      * @return true if password was changed successfully
      */
-    protected boolean changePassword(String newPassword) {
+    public boolean changePassword(String newPassword) {
         if (currentAccount != null) {
             currentAccount.setPassword(newPassword);
         }
@@ -78,7 +80,7 @@ public class Model {
      * @param description of the to do item
      * @return true if to do item is created and added successfully
      */
-    protected boolean createToDo(String title, String priority, String description) {
+    public boolean createToDo(String title, String priority, String description) {
         if (currentAccount != null) {
             currentAccount.addTodoItem(new TodoItem(title, description, priority));
         }
@@ -93,7 +95,7 @@ public class Model {
      * @param todoId of the item
      * @return the current account's TodoItem of the provided id
      */
-    protected TodoItem getToDo(int todoId) {
+    public TodoItem getToDo(int todoId) {
         if (currentAccount != null) {
             return currentAccount.getTodoItem(todoId);
         }
@@ -106,7 +108,7 @@ public class Model {
      * @param todoId of the item
      * @return true if item was deleted
      */
-    protected boolean deleteToDo(int todoId) {
+    public boolean deleteToDo(int todoId) {
         if (currentAccount != null) {
             return currentAccount.deleteTodoItem(todoId);
         }
@@ -118,7 +120,7 @@ public class Model {
      *
      * @return a HashMap containing the account's todos
      */
-    protected HashMap<Integer, TodoItem> listToDos() {
+    public HashMap<Integer, TodoItem> listToDos() {
         if (currentAccount != null) {
             return currentAccount.getTodoList();
         }

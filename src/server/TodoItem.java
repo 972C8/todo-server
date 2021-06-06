@@ -1,3 +1,5 @@
+package server;
+
 public class TodoItem {
 
     //Static to have same variable over all objects

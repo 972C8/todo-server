@@ -1,5 +1,3 @@
-package tests;
-
 class AccountTest {
 
     @org.junit.jupiter.api.BeforeEach
