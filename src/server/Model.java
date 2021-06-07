@@ -1,5 +1,7 @@
 package server;
 
+import data.ReadWriteData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -75,9 +77,10 @@ public class Model {
      *
      * @return
      */
-    public boolean logout() {
-        //TODO: logout functionality
-        return true;
+    public Response logout() {
+        //TODO: writeData on logout?
+        writeData();
+        return new Response(true);
     }
 
     /**
@@ -229,6 +232,23 @@ public class Model {
             return new Response(false);
         } catch (Exception e) {
             return new Response(false);
+        }
+    }
+
+    /**
+     * Write all data (todos + accounts) to specified json file
+     * Uses the ReadWriteData class, which extends BaseReadWrite.java from GsonUtility.jar
+     */
+    public void writeData() {
+        try {
+            ReadWriteData<HashMap<Integer, Account>> readWriteData = new ReadWriteData<>();
+            readWriteData.setLocation(System.getProperty("user.dir") + "/data.json");
+
+            //Write all data (todos) of all accounts to json
+            readWriteData.write(getAccounts());
+
+        } catch (Exception e) {
+            logger.severe("Exception occured while importing data");
         }
     }
 }

@@ -67,7 +67,7 @@ class ModelTest {
 
     @Test
     void logout() {
-        assertTrue(model.logout());
+        assertTrue(model.logout().isSuccess());
     }
 
     @Test
