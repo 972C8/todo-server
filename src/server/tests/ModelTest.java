@@ -18,7 +18,7 @@ class ModelTest {
         //create login for all methods to use
         String[] loginData = {"mail", "pass"};
         model.createLogin(loginData);
-        model.login("mail", "pass");
+        model.login(loginData);
     }
 
     @AfterEach
@@ -32,7 +32,7 @@ class ModelTest {
 
     /**
      * Reset data after each method test.
-     *
+     * <p>
      * This is important as static ids are tracked to ensure unique identifiers.
      * They must be reset for each new test to avoid data errors.
      */
@@ -51,12 +51,16 @@ class ModelTest {
     @Test
     void login() {
 
+        String[] log = {"mail", "pass"};
+        String[] passWrong = {"mail", "passWRONG"};
+        String[] mailWrong = {"mailWRONG", "pass"};
+
         //Must return true as login is valid
-        assertTrue(model.login("mail", "pass"));
+        assertTrue(model.login(log).isSuccess());
 
         //Must return false as login is invalid
-        assertFalse(model.login("mail", "passWRONG"));
-        assertFalse(model.login("mailWRONG", "pass"));
+        assertFalse(model.login(passWrong).isSuccess());
+        assertFalse(model.login(mailWrong).isSuccess());
     }
 
     @Test
@@ -66,10 +70,13 @@ class ModelTest {
 
     @Test
     void changePassword() {
+        String[] logNew = {"mail", "passNEW"};
+        String[] passWrong = {"mail", "passWRONG"};
+
         //change password and try login with new password
         assertTrue(model.changePassword("passNEW"));
-        assertTrue(model.login("mail", "passNEW"));
-        assertFalse(model.login("mail1", "passWRONG"));
+        assertTrue(model.login(logNew).isSuccess());
+        assertFalse(model.login(passWrong).isSuccess());
 
         String[] log1 = {"mail1", "pass1"};
         String[] log5 = {"mail5", "pass5"};
@@ -78,10 +85,13 @@ class ModelTest {
         model.createLogin(log1);
         model.createLogin(log5);
         model.createLogin(log10);
-        model.login("mail5", "pass5");
+
+        model.login(log5);
         System.out.println(model.getAccounts());
+
         model.changePassword("passNEW");
-        model.login("mail1", "pass1");
+        model.login(log1);
+
         model.changePassword("pass1NEW");
         System.out.println(model.getAccounts());
     }

@@ -2,11 +2,13 @@ package server;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class Model {
 
     private HashMap<Integer, Account> accounts = new HashMap<>();
     private static Account currentAccount;
+    private final Logger logger = Logger.getLogger("");
 
     /**
      * Create new account from provided credentials.
@@ -16,7 +18,7 @@ public class Model {
     public Response createLogin(String[] requestData) {
         try {
             //Only two parameters allowed
-            if (requestData.length > 2) {
+            if (requestData == null || requestData.length > 2) {
                 return new Response(false);
             }
             String mailAddress = requestData[0];
@@ -34,18 +36,41 @@ public class Model {
         }
     }
 
-    public boolean login(String mailAddress, String password) {
-        for (Map.Entry<Integer, Account> accountEntry : accounts.entrySet()) {
-            Account account = accountEntry.getValue();
-            if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
-                //TODO: do actual login
-                setCurrentAccount(account);
-                return true;
-            }
+    /**
+     * Login into existing account
+     *
+     * @param requestData is the login parameters provided
+     * @return Response with generated token
+     */
+    public Response login(String[] requestData) {
+        //Only two parameters allowed
+        if (requestData == null || requestData.length > 2) {
+            return new Response(false);
         }
-        return false;
+        String mailAddress = requestData[0];
+        String password = requestData[1];
+
+        try {
+            for (Map.Entry<Integer, Account> accountEntry : accounts.entrySet()) {
+                Account account = accountEntry.getValue();
+                if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
+
+                    //TODO: Return token
+                    return new Response(true);
+                }
+            }
+            return new Response(false);
+        } catch (Exception e) {
+            return new Response(false);
+        }
+
     }
 
+    /**
+     * Logout from server
+     *
+     * @return
+     */
     public boolean logout() {
         //TODO: logout functionality
         return true;
