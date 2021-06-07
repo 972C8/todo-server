@@ -34,4 +34,8 @@ public class Response {
         // Build the response string and return it.
         return "Result|" + this.success + data + "\n";
     }
+
+    public boolean isSuccess() {
+        return success;
+    }
 }

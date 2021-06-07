@@ -11,14 +11,27 @@ public class Model {
     /**
      * Create new account from provided credentials.
      *
-     * @param mailAddress is the username
-     * @param password    is the password
+     * @param requestData is the parameters provided
      */
-    public boolean createLogin(String mailAddress, String password) {
-        //TODO: Check mail and password for correctness (regex), return false if incorrect
-        Account account = new Account(mailAddress, password);
-        accounts.put(account.getId(), account);
-        return true;
+    public Response createLogin(String[] requestData) {
+        try {
+            //Only two parameters allowed
+            if (requestData.length > 2) {
+                return new Response(false);
+            }
+            String mailAddress = requestData[0];
+            String password = requestData[1];
+
+            //TODO: Fails if name already taken, or invalid
+            //TODO: Check mail and password for correctness (regex), return false if incorrect
+
+            Account account = new Account(mailAddress, password);
+            accounts.put(account.getId(), account);
+
+            return new Response(true);
+        } catch (Exception e) {
+            return new Response(false);
+        }
     }
 
     public boolean login(String mailAddress, String password) {

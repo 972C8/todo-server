@@ -16,7 +16,8 @@ class ModelTest {
         model = new Model();
 
         //create login for all methods to use
-        model.createLogin("mail", "pass");
+        String[] loginData = {"mail", "pass"};
+        model.createLogin(loginData);
         model.login("mail", "pass");
     }
 
@@ -43,7 +44,8 @@ class ModelTest {
 
     @Test
     void createLogin() {
-        assertTrue(model.createLogin("mail1", "pass1"));
+        String[] login = {"mail1", "pass1"};
+        assertTrue(model.createLogin(login).isSuccess());
     }
 
     @Test
@@ -69,9 +71,13 @@ class ModelTest {
         assertTrue(model.login("mail", "passNEW"));
         assertFalse(model.login("mail1", "passWRONG"));
 
-        model.createLogin("mail1", "pass1");
-        model.createLogin("mail5", "pass5");
-        model.createLogin("mail10", "pass10");
+        String[] log1 = {"mail1", "pass1"};
+        String[] log5 = {"mail5", "pass5"};
+        String[] log10 = {"mail10", "pass10"};
+
+        model.createLogin(log1);
+        model.createLogin(log5);
+        model.createLogin(log10);
         model.login("mail5", "pass5");
         System.out.println(model.getAccounts());
         model.changePassword("passNEW");

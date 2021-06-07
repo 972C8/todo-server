@@ -10,6 +10,7 @@ public class ClientThread extends Thread {
     private static int clientNumber = 0;
     private final Logger logger = Logger.getLogger("");
     private Socket socket;
+    private static Model model = new Model();
 
     public ClientThread(Socket socket) {
         super("Client#" + clientNumber++);
@@ -33,6 +34,7 @@ public class ClientThread extends Thread {
                 Response response = processRequest(lineIn);
 
                 // server.Response string is sent to client
+                logger.info("Response to client: " + response.toString());
                 out.write(response.toString());
 
                 // Flush the buffer
@@ -50,23 +52,32 @@ public class ClientThread extends Thread {
      * - Parses the various parameters of the request
      * - Calls functions for the different messageTypes
      * - Returns a response string that is sent to the client
+     *
      * @param request Request from the client as string
      * @return
      */
     private Response processRequest(String request) {
         Response response;
+        String[] requestData = null;
 
         // Decomposite the request
         String[] parts = request.split("\\|");
 
         // Assign element of request to variables
         String messageType = parts[0];
-        String[] requestData = Arrays.copyOfRange(parts, 1, parts.length);
+
+        //Check if additional parameters exist and add to String[] requestData
+        if (parts.length > 1) {
+            requestData = Arrays.copyOfRange(parts, 1, parts.length);
+        }
 
         // Switch between allowed messageTypes, otherwise return negative response
         switch (messageType) {
             case "Ping":
                 response = new Response(true);
+                break;
+            case "CreateLogin":
+                response = model.createLogin(requestData);
                 break;
             case "Example":
                 response = exampleMessageType(requestData);
@@ -82,6 +93,7 @@ public class ClientThread extends Thread {
     /**
      * Example function to showcase functionality.
      * TODO: Remove
+     *
      * @param requestData
      * @return
      */
