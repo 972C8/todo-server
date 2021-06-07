@@ -217,10 +217,18 @@ public class Model {
      *
      * @return a HashMap containing the account's todos
      */
-    public HashMap<Integer, TodoItem> listToDos() {
-        if (currentAccount != null) {
-            return currentAccount.getTodoList();
+    public Response listToDos() {
+        try {
+            //TODO: use token instead of currentAccount
+            if (currentAccount != null) {
+                String[] todoIds = currentAccount.getTodoIds();
+                if (todoIds.length > 0) {
+                    return new Response(true, todoIds);
+                }
+            }
+            return new Response(false);
+        } catch (Exception e) {
+            return new Response(false);
         }
-        return null;
     }
 }

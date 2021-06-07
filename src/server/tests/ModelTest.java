@@ -137,19 +137,30 @@ class ModelTest {
         String[] item2 = {"2"};
         String[] itemFalse = {"-3"};
 
+        //Check how many items exist before deleting one
+        assertEquals(3, model.listToDos().getData().length);
+
         assertNotNull(model.getToDo(item2));
         assertTrue(model.deleteToDo(item2).isSuccess());
-        assertFalse(model.getToDo(item2).isSuccess());
 
+        //Check how many items exist after deleting one
+        assertEquals(2, model.listToDos().getData().length);
+
+        assertFalse(model.getToDo(item2).isSuccess());
         assertFalse(model.deleteToDo(itemFalse).isSuccess());
+
     }
 
     @Test
     void listToDos() {
-        assertTrue(model.listToDos().isEmpty());
+        assertFalse(model.listToDos().isSuccess());
 
         prepareToDoItems();
-        assertNotNull(model.listToDos());
-        assertEquals(3, model.listToDos().size());
+
+        assertTrue(model.listToDos().isSuccess());
+        assertNotNull(model.listToDos().getData());
+
+        assertEquals(3, model.listToDos().getData().length);
+
     }
 }

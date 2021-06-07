@@ -1,6 +1,7 @@
 package server;
 
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class Account {
 
@@ -121,5 +122,19 @@ public class Account {
      */
     public HashMap<Integer, TodoItem> getTodoList() {
         return todoList;
+    }
+
+    /**
+     * Return a String[] response of all ids (keys in hashmap)
+     *
+     * Result is in format of {"1", "2", ..} for all ids
+     *
+     * @return String[] of keysets in hashmap
+     */
+    public String[] getTodoIds() {
+        return todoList.keySet()
+                .stream()
+                .flatMap(entry -> Stream.of(entry.toString()))
+                .toArray(String[]::new);
     }
 }
