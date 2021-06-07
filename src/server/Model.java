@@ -165,7 +165,7 @@ public class Model {
      * @return the current account's TodoItem of the provided id
      */
     public Response getToDo(String[] requestData) {
-        //Only three parameters allowed
+        //Only one parameters allowed
         if (requestData == null || requestData.length > 1) {
             return new Response(false);
         }
@@ -187,14 +187,29 @@ public class Model {
     /**
      * Delete the current account's TodoItem with the provided id
      *
-     * @param todoId of the item
+     * @param requestData of the item
      * @return true if item was deleted
      */
-    public boolean deleteToDo(int todoId) {
-        if (currentAccount != null) {
-            return currentAccount.deleteTodoItem(todoId);
+    public Response deleteToDo(String[] requestData) {
+        //Only one parameters allowed
+        if (requestData == null || requestData.length > 1) {
+            return new Response(false);
         }
-        return false;
+        String todoId = requestData[0];
+
+        try {
+            //TODO: use token instead of currentAccount
+            if (currentAccount != null) {
+                //TODO: check if id exists for this user
+                boolean itemDeleted = currentAccount.deleteTodoItem(Integer.parseInt(todoId));
+                if (itemDeleted) {
+                    return new Response(true);
+                }
+            }
+            return new Response(false);
+        } catch (Exception e) {
+            return new Response(false);
+        }
     }
 
     /**

@@ -135,12 +135,13 @@ class ModelTest {
         prepareToDoItems();
 
         String[] item2 = {"2"};
+        String[] itemFalse = {"-3"};
 
         assertNotNull(model.getToDo(item2));
-        assertTrue(model.deleteToDo(2));
-        assertNull(model.getToDo(item2));
+        assertTrue(model.deleteToDo(item2).isSuccess());
+        assertFalse(model.getToDo(item2).isSuccess());
 
-        assertFalse(model.deleteToDo(-3));
+        assertFalse(model.deleteToDo(itemFalse).isSuccess());
     }
 
     @Test

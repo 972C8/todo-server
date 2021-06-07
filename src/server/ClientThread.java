@@ -91,6 +91,9 @@ public class ClientThread extends Thread {
             case "GetToDo":
                 response = model.getToDo(requestData);
                 break;
+            case "DeleteToDo":
+                response = model.deleteToDo(requestData);
+                break;
             case "Example":
                 response = exampleMessageType(requestData);
                 break;
