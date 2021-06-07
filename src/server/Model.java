@@ -7,7 +7,10 @@ import java.util.logging.Logger;
 public class Model {
 
     private HashMap<Integer, Account> accounts = new HashMap<>();
+
+    //TODO: obsolete, remove
     private static Account currentAccount;
+
     private final Logger logger = Logger.getLogger("");
 
     /**
@@ -55,7 +58,8 @@ public class Model {
                 Account account = accountEntry.getValue();
                 if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
 
-                    //TODO: Return token
+                    //TODO: Return token instead
+                    setCurrentAccount(account);
                     return new Response(true);
                 }
             }
@@ -99,32 +103,59 @@ public class Model {
     /**
      * Change password of the current account
      *
-     * @param newPassword is the new password
+     * @param requestData is the new password
      * @return true if password was changed successfully
      */
-    public boolean changePassword(String newPassword) {
-        if (currentAccount != null) {
-            currentAccount.setPassword(newPassword);
+    public Response changePassword(String[] requestData) {
+        //Only one parameters allowed
+        if (requestData == null || requestData.length > 1) {
+            return new Response(false);
         }
-        //TODO: Exception handling, return false
-        return true;
+        String newPassword = requestData[0];
+
+        try {
+            //TODO: use token instead of currentAccount
+            if (currentAccount != null) {
+                //TODO: Exception handling, return false
+                currentAccount.setPassword(newPassword);
+                return new Response(true);
+            }
+            return new Response(false);
+        } catch (Exception e) {
+            return new Response(false);
+        }
     }
 
     /**
      * Create a new to do item and add it to the account
      *
-     * @param title       of the to do item
-     * @param priority    of the to do item
-     * @param description of the to do item
+     * @param requestData the content of the item to be created
      * @return true if to do item is created and added successfully
      */
-    public boolean createToDo(String title, String priority, String description) {
-        if (currentAccount != null) {
-            currentAccount.addTodoItem(new TodoItem(title, description, priority));
+    public Response createToDo(String[] requestData) {
+        //Only three parameters allowed
+        if (requestData == null || requestData.length > 3) {
+            return new Response(false);
         }
+        String title = requestData[0];
+        String priority = requestData[1];
+        String description = requestData[2];
 
-        //TODO: Exception handling, return false
-        return true;
+        try {
+            //TODO: use token instead of currentAccount
+            if (currentAccount != null) {
+                TodoItem item = new TodoItem(title, description, priority);
+                currentAccount.addTodoItem(item);
+
+                //Add id of created TodoItem to response
+                String[] response = {String.valueOf(item.getId())};
+                return new Response(true, response);
+            }
+            //TODO: Exception handling, return false
+            return new Response(false);
+        } catch (Exception e) {
+            return new Response(false);
+        }
     }
 
     /**

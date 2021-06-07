@@ -73,8 +73,10 @@ class ModelTest {
         String[] logNew = {"mail", "passNEW"};
         String[] passWrong = {"mail", "passWRONG"};
 
+        String[] newPass = {"passNEW"};
+
         //change password and try login with new password
-        assertTrue(model.changePassword("passNEW"));
+        assertTrue(model.changePassword(newPass).isSuccess());
         assertTrue(model.login(logNew).isSuccess());
         assertFalse(model.login(passWrong).isSuccess());
 
@@ -86,28 +88,27 @@ class ModelTest {
         model.createLogin(log5);
         model.createLogin(log10);
 
-        model.login(log5);
-        System.out.println(model.getAccounts());
-
-        model.changePassword("passNEW");
-        model.login(log1);
-
-        model.changePassword("pass1NEW");
-        System.out.println(model.getAccounts());
+        assertTrue(model.login(log5).isSuccess());
+        assertTrue(model.changePassword(newPass).isSuccess());
     }
 
     @Test
     void createToDo() {
-        assertTrue(model.createToDo("title", "HIGH", "description"));
+        String[] todo = {"title", "HIGH", "description"};
+        assertTrue(model.createToDo(todo).isSuccess());
     }
 
     /**
      * Create some to do items to test them
      */
     void prepareToDoItems() {
-        model.createToDo("todo1", "HIGH", "description1");
-        model.createToDo("todo2", "MEDIUM", "description2");
-        model.createToDo("todo3", "LOW", "description3");
+        String[] todo1 = {"todo1", "HIGH", "description1"};
+        String[] todo2 = {"todo2", "MEDIUM", "description2"};
+        String[] todo3 = {"todo3", "LOW", "description3"};
+
+        assertTrue(model.createToDo(todo1).isSuccess());
+        assertTrue(model.createToDo(todo2).isSuccess());
+        assertTrue(model.createToDo(todo3).isSuccess());
     }
 
     @Test

@@ -82,6 +82,12 @@ public class ClientThread extends Thread {
             case "Login":
                 response = model.login(requestData);
                 break;
+            case "ChangePassword":
+                response = model.changePassword(requestData);
+                break;
+            case "CreateToDo":
+                response = model.createToDo(requestData);
+                break;
             case "Example":
                 response = exampleMessageType(requestData);
                 break;

@@ -26,12 +26,12 @@ public class TodoItem {
     }
 
     public TodoItem(String title, String description, String priority) {
-        //Increment id for every new item
-        this.id = nextId++;
-
         this.title = title;
         this.description = description;
         this.priority = Priority.valueOf(priority);
+
+        //Increment id for every new item
+        this.id = nextId++;
     }
 
     public int getId() {
