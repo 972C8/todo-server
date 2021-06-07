@@ -38,4 +38,8 @@ public class Response {
     public boolean isSuccess() {
         return success;
     }
+
+    public String[] getData() {
+        return data;
+    }
 }

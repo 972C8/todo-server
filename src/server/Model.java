@@ -161,14 +161,27 @@ public class Model {
     /**
      * Return the current account's TodoItem with the provided id
      *
-     * @param todoId of the item
+     * @param requestData of the item
      * @return the current account's TodoItem of the provided id
      */
-    public TodoItem getToDo(int todoId) {
-        if (currentAccount != null) {
-            return currentAccount.getTodoItem(todoId);
+    public Response getToDo(String[] requestData) {
+        //Only three parameters allowed
+        if (requestData == null || requestData.length > 1) {
+            return new Response(false);
         }
-        return null;
+        String todoId = requestData[0];
+
+        try {
+            //TODO: use token instead of currentAccount
+            if (currentAccount != null) {
+                TodoItem item = currentAccount.getTodoItem(Integer.parseInt(todoId));
+                return new Response(true, item.getResponse());
+            }
+            return new Response(false);
+
+        } catch (Exception e) {
+            return new Response(false);
+        }
     }
 
     /**

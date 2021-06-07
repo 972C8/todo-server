@@ -72,4 +72,18 @@ public class TodoItem {
     public void setPriority(Priority priority) {
         this.priority = priority;
     }
+
+    /**
+     * Return response in String[] format
+     *
+     * @return response as String[]
+     */
+    public String[] getResponse() {
+        return new String[]{
+                String.valueOf(getId()),
+                getTitle(),
+                getPriority().toString(),
+                getDescription()
+        };
+    }
 }

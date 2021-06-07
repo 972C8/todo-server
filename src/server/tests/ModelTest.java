@@ -5,6 +5,8 @@ import server.Account;
 import server.Model;
 import server.TodoItem;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ModelTest {
@@ -115,19 +117,28 @@ class ModelTest {
     void getToDo() {
         prepareToDoItems();
 
-        assertEquals("todo1", model.getToDo(1).getTitle());
-        assertEquals("todo2", model.getToDo(2).getTitle());
-        assertEquals(TodoItem.Priority.HIGH, model.getToDo(1).getPriority());
+        String[] item1 = {"1"};
+        String[] item2 = {"2"};
+
+        assertTrue(model.getToDo(item1).isSuccess());
+        assertNotNull(model.getToDo(item1).getData());
+
+        //TODO: test content of response data correctly
+        /*
+        assertEquals(TodoItem.Priority.HIGH, model.getToDo(item1).getData());
         assertNotEquals(TodoItem.Priority.HIGH, model.getToDo(2).getPriority());
+        */
     }
 
     @Test
     void deleteToDo() {
         prepareToDoItems();
 
-        assertNotNull(model.getToDo(2));
+        String[] item2 = {"2"};
+
+        assertNotNull(model.getToDo(item2));
         assertTrue(model.deleteToDo(2));
-        assertNull(model.getToDo(2));
+        assertNull(model.getToDo(item2));
 
         assertFalse(model.deleteToDo(-3));
     }
