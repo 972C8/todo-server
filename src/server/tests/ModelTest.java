@@ -68,7 +68,11 @@ class ModelTest {
 
     @Test
     void logout() {
-        assertTrue(model.logout().isSuccess());
+        String[] token = {"mail"};
+        String[] tokenWrong = {"mailWRONG"};
+
+        assertTrue(model.logout(token).isSuccess());
+        assertFalse(model.logout(tokenWrong).isSuccess());
     }
 
     @Test

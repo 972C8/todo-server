@@ -157,14 +157,36 @@ public class Model {
     }
 
     /**
-     * Logout from server
+     * Logout user. Invalidates the token
      *
-     * @return
+     * @param requestData the token to invalidate
+     * @return Response containing true if user was successfully logged out
      */
-    public Response logout() {
-        //TODO: writeData on logout?
-        writeData();
-        return new Response(true);
+    public Response logout(String[] requestData) {
+        try {
+            //Only one parameter (token) allowed
+            if (requestData == null || requestData.length > 1) {
+                return new Response(false);
+            }
+            String token = requestData[0];
+
+            //Verify token and return true if valid
+            if (verifyToken(token)) {
+
+                //Invalidate token
+                tokens.remove(token);
+
+                //Export data
+                logger.info("Logout occurred. Data export initialized.");
+                writeData();
+
+                return new Response(true);
+            }
+            //Token was invalid
+            return new Response(false);
+        } catch (Exception e) {
+            return new Response(false);
+        }
     }
 
     /**
