@@ -136,8 +136,8 @@ public class Model {
      * @return true if to do item is created and added successfully
      */
     public Response createToDo(String[] requestData) {
-        //Only three parameters allowed
-        if (requestData == null || requestData.length > 3) {
+        //Only four parameters allowed (fourth is due date which is ignored)
+        if (requestData == null || requestData.length > 4) {
             return new Response(false);
         }
         String title = requestData[0];
