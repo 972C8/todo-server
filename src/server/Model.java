@@ -7,8 +7,11 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class Model {
-
+    //Hashmap in format <AccountId, Account Object>
     private HashMap<Integer, Account> accounts = new HashMap<>();
+
+    //Hashmap in format <TOKEN, AccountId>
+    private HashMap<String, Integer> tokens = new HashMap<>();
 
     //TODO: obsolete, remove
     private static Account currentAccount;
@@ -60,9 +63,14 @@ public class Model {
                 Account account = accountEntry.getValue();
                 if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
 
-                    //TODO: Return token instead
-                    setCurrentAccount(account);
-                    return new Response(true);
+                    //Add token session to hashmap of current tokens
+                    //TODO: use actual token instead of mail address
+                    tokens.put(account.getMailAddress(), account.getId());
+
+                    //Return the generated token together with the response
+                    //TODO: Use actual token instead of mail address
+                    String[] token = {account.getMailAddress()};
+                    return new Response(true, token);
                 }
             }
             return new Response(false);
@@ -83,15 +91,6 @@ public class Model {
         return new Response(true);
     }
 
-    /**
-     * Set a new current account
-     *
-     * @param newAccount is the new current account
-     */
-    private void setCurrentAccount(Account newAccount) {
-        currentAccount = newAccount;
-    }
-
     public HashMap<Integer, Account> getAccounts() {
         return accounts;
     }
@@ -110,23 +109,53 @@ public class Model {
      * @return true if password was changed successfully
      */
     public Response changePassword(String[] requestData) {
-        //Only one parameters allowed
-        if (requestData == null || requestData.length > 1) {
+        //Only two parameters allowed
+        if (requestData == null || requestData.length > 2) {
             return new Response(false);
         }
-        String newPassword = requestData[0];
 
         try {
-            //TODO: use token instead of currentAccount
-            if (currentAccount != null) {
-                //TODO: Exception handling, return false
-                currentAccount.setPassword(newPassword);
+            String token = requestData[0];
+            String newPassword = requestData[1];
+
+            if (token == null || newPassword == null) {
+                return new Response(false);
+            }
+
+            //Verify token and set password
+            if (verifyToken(token)) {
+                //Get account from provided token
+                Account account = getAccountByToken(token);
+
+                //Set new password
+                account.setPassword(newPassword);
                 return new Response(true);
             }
             return new Response(false);
         } catch (Exception e) {
             return new Response(false);
         }
+    }
+
+    /**
+     * Get account from provided token
+     *
+     * @param token
+     * @return account associated with token
+     */
+    private Account getAccountByToken(String token) {
+        Integer accountId = tokens.get(token);
+        return accounts.get(accountId);
+    }
+
+    /**
+     * Return true if token provided by client is valid
+     *
+     * @param token
+     * @return true if token is valid
+     */
+    private boolean verifyToken(String token) {
+        return token != null && tokens.containsKey(token);
     }
 
     /**

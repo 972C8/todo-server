@@ -8,6 +8,7 @@ import java.util.HashMap;
 /**
  * Reads and writes data from the given HashMap to a specified json file.
  * Based on the code from GsonUtility.jar (https://github.com/972C8/GsonUtility)
+ * This separate package was created by us for the last project and is used in this project again
  *
  * @param <T>
  */

@@ -75,7 +75,8 @@ class ModelTest {
         String[] logNew = {"mail", "passNEW"};
         String[] passWrong = {"mail", "passWRONG"};
 
-        String[] newPass = {"passNEW"};
+        //token, new password
+        String[] newPass = {"mail", "passNEW"};
 
         //change password and try login with new password
         assertTrue(model.changePassword(newPass).isSuccess());
