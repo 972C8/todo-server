@@ -26,10 +26,6 @@ public class Account {
         return mailAddress;
     }
 
-    public void setMailAddress(String mailAddress) {
-        this.mailAddress = mailAddress;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -42,15 +38,13 @@ public class Account {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     /**
-     * Reset the static nextId of Account
+     * Set static next id.
+     *
+     * @param nextId
      */
-    public static void resetNextId() {
-        Account.nextId = 1;
+    public static void setNextId(int nextId) {
+        Account.nextId = nextId;
     }
 
     @Override
@@ -126,7 +120,7 @@ public class Account {
 
     /**
      * Return a String[] response of all ids (keys in hashmap)
-     *
+     * <p>
      * Result is in format of {"1", "2", ..} for all ids
      *
      * @return String[] of keysets in hashmap

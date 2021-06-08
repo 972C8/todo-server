@@ -2,16 +2,18 @@ package server;
 
 import data.ReadWriteData;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
 public class Model {
     //Hashmap in format <AccountId, AccountObject>
-    private HashMap<Integer, Account> accounts = new HashMap<>();
+    private static HashMap<Integer, Account> accounts = new HashMap<>();
 
     //Hashmap in format <TOKEN, AccountId>
-    private HashMap<String, Integer> tokens = new HashMap<>();
+    private static HashMap<String, Integer> tokens = new HashMap<>();
 
     private final Logger logger = Logger.getLogger("");
 
@@ -50,6 +52,15 @@ public class Model {
      */
     public void resetAccounts() {
         accounts = new HashMap<>();
+    }
+
+    /**
+     * Overwrite accounts hashmap with new hashmap
+     *
+     * @param newHashmap overwrites the old hashmap accounts
+     */
+    public void overwriteAccounts(HashMap<Integer, Account> newHashmap) {
+        accounts = newHashmap;
     }
 
     /**
@@ -326,8 +337,39 @@ public class Model {
             //Write all data (todos) of all accounts to json
             readWriteData.write(getAccounts());
 
+            logger.info("Exported data to json successfully");
         } catch (Exception e) {
-            logger.severe("Exception occured while importing data");
+            logger.severe("No data could be exported to specified file");
+        }
+    }
+
+    /**
+     * Read all data (todos + accounts) from specified json file
+     * Uses the ReadWriteData class, which extends BaseReadWrite.java from GsonUtility.jar
+     */
+    public void readData() {
+        try {
+            ReadWriteData<HashMap<Integer, Account>> readWriteData = new ReadWriteData<>();
+            readWriteData.setLocation(System.getProperty("user.dir") + "/data.json");
+
+            //Throw exception if file at location doesn't exist
+            if (!new File(readWriteData.getLocation()).exists()) {
+                throw new IOException();
+            }
+
+            //Read all data (todos) of all accounts from json
+            HashMap<Integer, Account> hashmap = readWriteData.read();
+
+            //Overwrite old hashmap with new, imported hashmap
+            overwriteAccounts(hashmap);
+            //Overwrite static nextIds with new highest id from imported json. Ensures correct id tracking of accounts
+            readWriteData.overwriteNextIds(getAccounts());
+
+            logger.info("Imported data from json successfully");
+        } catch (IOException io) {
+            logger.severe("No file found to import data from");
+        } catch (Exception e) {
+            logger.warning("No data could be imported from specified file");
         }
     }
 }

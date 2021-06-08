@@ -40,8 +40,9 @@ class ModelTest {
      */
     void resetData() {
         model.resetAccounts();
-        Account.resetNextId();
-        TodoItem.resetNextId();
+        //Reset ids to default value
+        Account.setNextId(1);
+        TodoItem.setNextId(1);
     }
 
     @Test

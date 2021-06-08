@@ -14,11 +14,15 @@ public class TodoServer {
     public static void main(String[] args) {
         model = new Model();
 
+        //Read data from specified json file
+        model.readData();
+
         TodoServer server = new TodoServer();
         server.listenForConnections();
     }
 
-    private TodoServer() {}
+    private TodoServer() {
+    }
 
     private void listenForConnections() {
         try (ServerSocket listener = new ServerSocket(PORT, 10, null)) {
