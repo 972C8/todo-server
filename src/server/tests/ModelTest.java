@@ -97,7 +97,8 @@ class ModelTest {
 
     @Test
     void createToDo() {
-        String[] todo = {"title", "HIGH", "description"};
+        //TODO: mail must be exchanged with actual token once implemented
+        String[] todo = {"mail", "title", "HIGH", "description"};
         assertTrue(model.createToDo(todo).isSuccess());
     }
 
@@ -105,9 +106,10 @@ class ModelTest {
      * Create some to do items to test them
      */
     void prepareToDoItems() {
-        String[] todo1 = {"todo1", "HIGH", "description1"};
-        String[] todo2 = {"todo2", "MEDIUM", "description2"};
-        String[] todo3 = {"todo3", "LOW", "description3"};
+        //TODO: mail must be exchanged with actual token once implemented
+        String[] todo1 = {"mail", "todo1", "HIGH", "description1"};
+        String[] todo2 = {"mail", "todo2", "MEDIUM", "description2"};
+        String[] todo3 = {"mail", "todo3", "LOW", "description3"};
 
         assertTrue(model.createToDo(todo1).isSuccess());
         assertTrue(model.createToDo(todo2).isSuccess());
@@ -118,8 +120,9 @@ class ModelTest {
     void getToDo() {
         prepareToDoItems();
 
-        String[] item1 = {"1"};
-        String[] item2 = {"2"};
+        //TODO: mail must be exchanged with actual token once implemented
+        String[] item1 = {"mail", "1"};
+        String[] item2 = {"mail", "2"};
 
         assertTrue(model.getToDo(item1).isSuccess());
         assertNotNull(model.getToDo(item1).getData());
@@ -133,19 +136,21 @@ class ModelTest {
 
     @Test
     void deleteToDo() {
-        prepareToDoItems();
-
-        String[] item2 = {"2"};
+        String[] token = {"mail"};
+        //TODO: mail must be exchanged with actual token once implemented
+        String[] item2 = {"mail", "2"};
         String[] itemFalse = {"-3"};
 
+        prepareToDoItems();
+
         //Check how many items exist before deleting one
-        assertEquals(3, model.listToDos().getData().length);
+        assertEquals(3, model.listToDos(token).getData().length);
 
         assertNotNull(model.getToDo(item2));
         assertTrue(model.deleteToDo(item2).isSuccess());
 
         //Check how many items exist after deleting one
-        assertEquals(2, model.listToDos().getData().length);
+        assertEquals(2, model.listToDos(token).getData().length);
 
         assertFalse(model.getToDo(item2).isSuccess());
         assertFalse(model.deleteToDo(itemFalse).isSuccess());
@@ -154,14 +159,16 @@ class ModelTest {
 
     @Test
     void listToDos() {
-        assertFalse(model.listToDos().isSuccess());
+        String[] token = {"mail"};
+
+        assertFalse(model.listToDos(null).isSuccess());
 
         prepareToDoItems();
 
-        assertTrue(model.listToDos().isSuccess());
-        assertNotNull(model.listToDos().getData());
+        assertTrue(model.listToDos(token).isSuccess());
+        assertNotNull(model.listToDos(token).getData());
 
-        assertEquals(3, model.listToDos().getData().length);
+        assertEquals(3, model.listToDos(token).getData().length);
 
     }
 }

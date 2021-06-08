@@ -51,14 +51,14 @@ public class Model {
      * @return Response with generated token
      */
     public Response login(String[] requestData) {
-        //Only two parameters allowed
-        if (requestData == null || requestData.length > 2) {
-            return new Response(false);
-        }
-        String mailAddress = requestData[0];
-        String password = requestData[1];
-
         try {
+            //Only two parameters allowed
+            if (requestData == null || requestData.length > 2) {
+                return new Response(false);
+            }
+            String mailAddress = requestData[0];
+            String password = requestData[1];
+
             for (Map.Entry<Integer, Account> accountEntry : accounts.entrySet()) {
                 Account account = accountEntry.getValue();
                 if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
@@ -77,7 +77,6 @@ public class Model {
         } catch (Exception e) {
             return new Response(false);
         }
-
     }
 
     /**
@@ -109,18 +108,13 @@ public class Model {
      * @return true if password was changed successfully
      */
     public Response changePassword(String[] requestData) {
-        //Only two parameters allowed
-        if (requestData == null || requestData.length > 2) {
-            return new Response(false);
-        }
-
         try {
-            String token = requestData[0];
-            String newPassword = requestData[1];
-
-            if (token == null || newPassword == null) {
+            //Only two parameters allowed
+            if (requestData == null || requestData.length > 2) {
                 return new Response(false);
             }
+            String token = requestData[0];
+            String newPassword = requestData[1];
 
             //Verify token and set password
             if (verifyToken(token)) {
@@ -165,25 +159,28 @@ public class Model {
      * @return true if to do item is created and added successfully
      */
     public Response createToDo(String[] requestData) {
-        //Only four parameters allowed (fourth is due date which is ignored)
-        if (requestData == null || requestData.length > 4) {
-            return new Response(false);
-        }
-        String title = requestData[0];
-        String priority = requestData[1];
-        String description = requestData[2];
-
         try {
-            //TODO: use token instead of currentAccount
-            if (currentAccount != null) {
+            //Only 5 parameters allowed (5th is due date which is ignored)
+            if (requestData == null || requestData.length > 5) {
+                return new Response(false);
+            }
+            String token = requestData[0];
+            String title = requestData[1];
+            String priority = requestData[2];
+            String description = requestData[3];
+
+            //Verify token and create item
+            if (verifyToken(token)) {
+                //Get account from provided token
+                Account account = getAccountByToken(token);
+
                 TodoItem item = new TodoItem(title, description, priority);
-                currentAccount.addTodoItem(item);
+                account.addTodoItem(item);
 
                 //Add id of created TodoItem to response
                 String[] response = {String.valueOf(item.getId())};
                 return new Response(true, response);
             }
-            //TODO: Exception handling, return false
             return new Response(false);
         } catch (Exception e) {
             return new Response(false);
@@ -197,16 +194,22 @@ public class Model {
      * @return the current account's TodoItem of the provided id
      */
     public Response getToDo(String[] requestData) {
-        //Only one parameters allowed
-        if (requestData == null || requestData.length > 1) {
-            return new Response(false);
-        }
-        String todoId = requestData[0];
-
         try {
-            //TODO: use token instead of currentAccount
-            if (currentAccount != null) {
-                TodoItem item = currentAccount.getTodoItem(Integer.parseInt(todoId));
+            //Only two parameters allowed
+            if (requestData == null || requestData.length > 2) {
+                return new Response(false);
+            }
+            String token = requestData[0];
+            String todoId = requestData[1];
+
+            //Verify token and get item
+            if (verifyToken(token)) {
+                //Get account from provided token
+                Account account = getAccountByToken(token);
+
+                TodoItem item = account.getTodoItem(Integer.parseInt(todoId));
+
+                //get item content in response format
                 return new Response(true, item.getResponse());
             }
             return new Response(false);
@@ -223,17 +226,21 @@ public class Model {
      * @return true if item was deleted
      */
     public Response deleteToDo(String[] requestData) {
-        //Only one parameters allowed
-        if (requestData == null || requestData.length > 1) {
-            return new Response(false);
-        }
-        String todoId = requestData[0];
-
         try {
-            //TODO: use token instead of currentAccount
-            if (currentAccount != null) {
+            //Only two parameters allowed
+            if (requestData == null || requestData.length > 2) {
+                return new Response(false);
+            }
+            String token = requestData[0];
+            String todoId = requestData[1];
+
+            //Verify token and get item
+            if (verifyToken(token)) {
+                //Get account from provided token
+                Account account = getAccountByToken(token);
+
                 //TODO: check if id exists for this user
-                boolean itemDeleted = currentAccount.deleteTodoItem(Integer.parseInt(todoId));
+                boolean itemDeleted = account.deleteTodoItem(Integer.parseInt(todoId));
                 if (itemDeleted) {
                     return new Response(true);
                 }
@@ -249,11 +256,20 @@ public class Model {
      *
      * @return a HashMap containing the account's todos
      */
-    public Response listToDos() {
+    public Response listToDos(String[] requestData) {
         try {
-            //TODO: use token instead of currentAccount
-            if (currentAccount != null) {
-                String[] todoIds = currentAccount.getTodoIds();
+            //Only one parameter allowed
+            if (requestData == null || requestData.length > 1) {
+                return new Response(false);
+            }
+            String token = requestData[0];
+
+            //Verify token and get item
+            if (verifyToken(token)) {
+                //Get account from provided token
+                Account account = getAccountByToken(token);
+
+                String[] todoIds = account.getTodoIds();
                 if (todoIds.length > 0) {
                     return new Response(true, todoIds);
                 }
