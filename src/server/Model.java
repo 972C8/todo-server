@@ -7,16 +7,82 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class Model {
-    //Hashmap in format <AccountId, Account Object>
+    //Hashmap in format <AccountId, AccountObject>
     private HashMap<Integer, Account> accounts = new HashMap<>();
 
     //Hashmap in format <TOKEN, AccountId>
     private HashMap<String, Integer> tokens = new HashMap<>();
 
-    //TODO: obsolete, remove
-    private static Account currentAccount;
-
     private final Logger logger = Logger.getLogger("");
+
+    /**
+     * Return true if token provided by client is valid
+     *
+     * @param token
+     * @return true if token is valid
+     */
+    private boolean verifyToken(String token) {
+        return token != null && tokens.containsKey(token);
+    }
+
+    /**
+     * Get account from provided token
+     *
+     * @param token
+     * @return account associated with token
+     */
+    private Account getAccountByToken(String token) {
+        Integer accountId = tokens.get(token);
+        return accounts.get(accountId);
+    }
+
+    /**
+     * Return the accounts hashmap
+     *
+     * @return hashmap of accounts
+     */
+    public HashMap<Integer, Account> getAccounts() {
+        return accounts;
+    }
+
+    /**
+     * Reset the accounts HashMap
+     */
+    public void resetAccounts() {
+        accounts = new HashMap<>();
+    }
+
+    /**
+     * Respond to ping from client
+     *
+     * @param requestData can include a token
+     * @return Response containing true or false
+     */
+    public Response ping(String[] requestData) {
+        try {
+            //Return true if no paramaters are provided
+            //Default behaviour as connection was already successfully established
+            if (requestData == null) {
+                return new Response(true);
+            }
+
+            //At most one parameter allowed
+            if (requestData.length > 1) {
+                return new Response(false);
+            }
+
+            //Verify token and return true if valid
+            String token = requestData[0];
+            if (verifyToken(token)) {
+                return new Response(true);
+            }
+
+            //Token was invalid
+            return new Response(false);
+        } catch (Exception e) {
+            return new Response(false);
+        }
+    }
 
     /**
      * Create new account from provided credentials.
@@ -90,17 +156,6 @@ public class Model {
         return new Response(true);
     }
 
-    public HashMap<Integer, Account> getAccounts() {
-        return accounts;
-    }
-
-    /**
-     * Reset the accounts HashMap
-     */
-    public void resetAccounts() {
-        accounts = new HashMap<>();
-    }
-
     /**
      * Change password of the current account
      *
@@ -129,27 +184,6 @@ public class Model {
         } catch (Exception e) {
             return new Response(false);
         }
-    }
-
-    /**
-     * Get account from provided token
-     *
-     * @param token
-     * @return account associated with token
-     */
-    private Account getAccountByToken(String token) {
-        Integer accountId = tokens.get(token);
-        return accounts.get(accountId);
-    }
-
-    /**
-     * Return true if token provided by client is valid
-     *
-     * @param token
-     * @return true if token is valid
-     */
-    private boolean verifyToken(String token) {
-        return token != null && tokens.containsKey(token);
     }
 
     /**

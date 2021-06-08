@@ -27,7 +27,7 @@ public class ClientThread extends Thread {
             String lineIn;
             while ((lineIn = in.readLine()) != null && lineIn.length() != 0) {
 
-                logger.info("Request from client.");
+                logger.info("Request from client: " + lineIn);
 
                 // Process single request
                 // Returns response string
@@ -74,7 +74,7 @@ public class ClientThread extends Thread {
         // Switch between allowed messageTypes, otherwise return negative response
         switch (messageType) {
             case "Ping":
-                response = new Response(true);
+                response = model.ping(requestData);
                 break;
             case "CreateLogin":
                 response = model.createLogin(requestData);
@@ -100,32 +100,10 @@ public class ClientThread extends Thread {
             case "Logout":
                 response = model.logout();
                 break;
-            case "Example":
-                response = exampleMessageType(requestData);
-                break;
             default:
                 response = new Response(false);
                 break;
         }
-
-        return response;
-    }
-
-    /**
-     * Example function to showcase functionality.
-     * TODO: Remove
-     *
-     * @param requestData
-     * @return
-     */
-    private Response exampleMessageType(String[] requestData) {
-        // ... Do business logic stuff here with requestData
-
-        // Example responseData
-        String[] responseData = {"ABC", "DEF"};
-
-        // Create response object for request
-        Response response = new Response(true, responseData);
 
         return response;
     }
