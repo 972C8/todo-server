@@ -357,7 +357,7 @@ public class Model {
                     return new Response(true, todoIds);
                 }
             }
-            return new Response(false);
+            return new Response(true);
         } catch (Exception e) {
             return new Response(false);
         }
