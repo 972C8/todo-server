@@ -380,8 +380,9 @@ public class Model {
                 if (todoIds.length > 0) {
                     return new Response(true, todoIds);
                 }
+                return new Response(true);
             }
-            return new Response(true);
+            return new Response(false);
         } catch (Exception e) {
             return new Response(false);
         }
