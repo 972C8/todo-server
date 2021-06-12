@@ -1,6 +1,11 @@
 package server;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class Account {
@@ -8,9 +13,11 @@ public class Account {
     //Static to have same variable over all objects
     //Tracks the account ids to ensure a unique identifier
     private static int nextId = 1;
+    private static final Logger logger = Logger.getLogger("");
 
     private int id;
     private String mailAddress;
+    private byte[] salt;
     private String password;
     private HashMap<Integer, TodoItem> todoList = new HashMap<>();
 
@@ -19,7 +26,8 @@ public class Account {
         this.id = nextId++;
 
         this.mailAddress = mailAddress;
-        this.password = password;
+        this.salt = generateSalt();
+        this.password = hashPassword(password);
     }
 
     public String getMailAddress() {
@@ -34,8 +42,17 @@ public class Account {
         return password;
     }
 
+    /**
+     * Sets new password of account.
+     * Refreshes salt and hashes given password.
+     *
+     * @param password passwordString
+     */
     public void setPassword(String password) {
-        this.password = password;
+        // Refresh salt
+        this.salt = generateSalt();
+
+        this.password = hashPassword(password);
     }
 
     public int getId() {
@@ -79,7 +96,9 @@ public class Account {
      * @return true if password is correct
      */
     public boolean validPassword(String password) {
-        return getPassword().equals(password);
+        String hashedPassword = hashPassword(password);
+
+        return (hashedPassword.equals(this.getPassword()));
     }
 
     /**
@@ -136,5 +155,59 @@ public class Account {
                 .stream()
                 .flatMap(entry -> Stream.of(entry.toString()))
                 .toArray(String[]::new);
+    }
+
+    /**
+     * Hashes a given password string with SHA-512 and a random salt sequence.
+     *
+     * @param password password as string
+     * @return SHA-256 hashed password
+     */
+    public String hashPassword(String password) {
+        MessageDigest digest;
+        byte[] encodedHash = {};
+
+        try {
+            digest = MessageDigest.getInstance("SHA-512");
+            digest.update(salt);
+            encodedHash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+        } catch (NoSuchAlgorithmException e) {
+            logger.severe(e.toString());
+        }
+
+        // convert array of bytes to hexadecimal string
+        return byteArrayToHexString(encodedHash);
+    }
+
+    /**
+     * Generates random sequence for hashing the password.
+     * Prevents the usage of "rainbow tables" (comparing with hash-tables)
+     *
+     * @return salt
+     */
+    public static byte[] generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+
+        return salt;
+    }
+
+    /**
+     * Converts array of bytes to hexadecimal string
+     *
+     * @param hash byte array of hash
+     * @return hexadecimal string of hash
+     */
+    public static String byteArrayToHexString(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }

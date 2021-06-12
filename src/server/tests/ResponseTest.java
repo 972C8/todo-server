@@ -13,8 +13,8 @@ public class ResponseTest {
     void setUp() {
         responseStringTrue = "Result|true\n";
         responseStringFalse = "Result|false\n";
-        responseStringWithData1 = "Result|false|A\n";
-        responseStringWithData2 = "Result|false|A|B\n";
+        responseStringWithData1 = "Result|true|A\n";
+        responseStringWithData2 = "Result|true|A|B\n";
     }
 
     @AfterEach
