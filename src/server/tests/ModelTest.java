@@ -3,6 +3,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.Account;
 import server.Model;
+import server.Response;
 import server.TodoItem;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ModelTest {
 
     private Model model;
+    private String token;
 
     @BeforeEach
     void setUp() {
@@ -18,7 +20,8 @@ class ModelTest {
         //create login for all methods to use
         String[] loginData = {"mail", "pass"};
         model.createLogin(loginData);
-        model.login(loginData);
+        Response response = model.login(loginData);
+        token = response.getData()[0];
     }
 
     @AfterEach
@@ -66,7 +69,7 @@ class ModelTest {
 
     @Test
     void logout() {
-        String[] token = {"mail"};
+        String[] token = {this.token};
         String[] tokenWrong = {"mailWRONG"};
 
         assertTrue(model.logout(token).isSuccess());
@@ -79,7 +82,7 @@ class ModelTest {
         String[] passWrong = {"mail", "passWRONG"};
 
         //token, new password
-        String[] newPass = {"mail", "passNEW"};
+        String[] newPass = {this.token, "passNEW"};
 
         //change password and try login with new password
         assertTrue(model.changePassword(newPass).isSuccess());
@@ -99,9 +102,16 @@ class ModelTest {
     }
 
     @Test
+    void generateToken() {
+        String token = Model.generateToken();
+        int expectedLength = Model.getTokenLength();
+
+        assertEquals(token.length(), expectedLength);
+    }
+
+    @Test
     void createToDo() {
-        //TODO: mail must be exchanged with actual token once implemented
-        String[] todo = {"mail", "title", "HIGH", "description"};
+        String[] todo = {this.token, "title", "HIGH", "description"};
         assertTrue(model.createToDo(todo).isSuccess());
     }
 
@@ -109,10 +119,9 @@ class ModelTest {
      * Create some to do items to test them
      */
     void prepareToDoItems() {
-        //TODO: mail must be exchanged with actual token once implemented
-        String[] todo1 = {"mail", "todo1", "HIGH", "description1"};
-        String[] todo2 = {"mail", "todo2", "MEDIUM", "description2"};
-        String[] todo3 = {"mail", "todo3", "LOW", "description3"};
+        String[] todo1 = {this.token, "todo1", "HIGH", "description1"};
+        String[] todo2 = {this.token, "todo2", "MEDIUM", "description2"};
+        String[] todo3 = {this.token, "todo3", "LOW", "description3"};
 
         assertTrue(model.createToDo(todo1).isSuccess());
         assertTrue(model.createToDo(todo2).isSuccess());
@@ -123,9 +132,8 @@ class ModelTest {
     void getToDo() {
         prepareToDoItems();
 
-        //TODO: mail must be exchanged with actual token once implemented
-        String[] item1 = {"mail", "1"};
-        String[] item2 = {"mail", "2"};
+         String[] item1 = {this.token, "1"};
+        String[] item2 = {this.token, "2"};
 
         assertTrue(model.getToDo(item1).isSuccess());
         assertNotNull(model.getToDo(item1).getData());
@@ -139,9 +147,8 @@ class ModelTest {
 
     @Test
     void deleteToDo() {
-        String[] token = {"mail"};
-        //TODO: mail must be exchanged with actual token once implemented
-        String[] item2 = {"mail", "2"};
+        String[] token = {this.token};
+        String[] item2 = {this.token, "2"};
         String[] itemFalse = {"-3"};
 
         prepareToDoItems();
@@ -162,7 +169,7 @@ class ModelTest {
 
     @Test
     void listToDos() {
-        String[] token = {"mail"};
+        String[] token = {this.token};
 
         assertFalse(model.listToDos(null).isSuccess());
 

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public class Model {
@@ -16,6 +17,7 @@ public class Model {
     private static HashMap<String, Integer> tokens = new HashMap<>();
 
     private final Logger logger = Logger.getLogger("");
+    private static final int tokenLength = 40;
 
     /**
      * Return true if token provided by client is valid
@@ -141,13 +143,12 @@ public class Model {
                 if (account.validMailAddress(mailAddress) && account.validPassword(password)) {
 
                     //Add token session to hashmap of current tokens
-                    //TODO: use actual token instead of mail address
-                    tokens.put(account.getMailAddress(), account.getId());
+                    String token = generateToken();
+                    tokens.put(token, account.getId());
 
                     //Return the generated token together with the response
-                    //TODO: Use actual token instead of mail address
-                    String[] token = {account.getMailAddress()};
-                    return new Response(true, token);
+                    String[] responseData = {token};
+                    return new Response(true, responseData);
                 }
             }
             return new Response(false);
@@ -217,6 +218,21 @@ public class Model {
         } catch (Exception e) {
             return new Response(false);
         }
+    }
+
+    /**
+     * Generates a new token (random hexadecimal string).
+     * Length is defined in constant tokenLength.
+     * @return new token
+     */
+    public static String generateToken() {
+        Random random = new Random();
+        StringBuilder stringBuilder = new StringBuilder();
+        while(stringBuilder.length() < tokenLength){
+            stringBuilder.append(Integer.toHexString(random.nextInt()));
+        }
+
+        return stringBuilder.substring(0, tokenLength);
     }
 
     /**
@@ -394,4 +410,13 @@ public class Model {
             logger.warning("No data could be imported from specified file");
         }
     }
+
+    /**
+     * Returns length of tokens
+     * @return integer
+     */
+    public static int getTokenLength() {
+        return tokenLength;
+    }
+
 }
