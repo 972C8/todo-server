@@ -98,7 +98,7 @@ public class ClientThread extends Thread {
                 response = model.listToDos(requestData);
                 break;
             case "Logout":
-                response = model.logout();
+                response = model.logout(requestData);
                 break;
             default:
                 response = new Response(false);

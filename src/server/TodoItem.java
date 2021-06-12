@@ -38,40 +38,27 @@ public class TodoItem {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     /**
-     * Reset the static nextId of TodoItem
+     * Set the static nextId of TodoItem
+     *
+     * @param nextId
      */
-    public static void resetNextId() {
-        TodoItem.nextId = 1;
+    public static void setNextId(int nextId) {
+        TodoItem.nextId = nextId;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Priority getPriority() {
         return priority;
     }
 
-    public void setPriority(Priority priority) {
-        this.priority = priority;
-    }
 
     /**
      * Return response in String[] format

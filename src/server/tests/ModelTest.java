@@ -38,8 +38,9 @@ class ModelTest {
      */
     void resetData() {
         model.resetAccounts();
-        Account.resetNextId();
-        TodoItem.resetNextId();
+        //Reset ids to default value
+        Account.setNextId(1);
+        TodoItem.setNextId(1);
     }
 
     @Test
@@ -65,7 +66,11 @@ class ModelTest {
 
     @Test
     void logout() {
-        assertTrue(model.logout().isSuccess());
+        String[] token = {"mail"};
+        String[] tokenWrong = {"mailWRONG"};
+
+        assertTrue(model.logout(token).isSuccess());
+        assertFalse(model.logout(tokenWrong).isSuccess());
     }
 
     @Test
