@@ -49,7 +49,9 @@ class ModelTest {
     @Test
     void createLogin() {
         String[] login = {"mail1", "pass1"};
+        String[] loginWrong = {"mail", "pass"};
         assertTrue(model.createLogin(login).isSuccess());
+        assertFalse(model.createLogin(loginWrong).isSuccess());
     }
 
     @Test

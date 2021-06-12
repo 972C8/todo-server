@@ -111,6 +111,9 @@ public class Model {
             String mailAddress = requestData[0];
             String password = requestData[1];
 
+            // If mailAddress is already taken, return false
+            if (mailAlreadyTaken(mailAddress)) return new Response(false);
+
             //TODO: Fails if name already taken, or invalid
             //TODO: Check mail and password for correctness (regex), return false if incorrect
 
@@ -121,6 +124,27 @@ public class Model {
         } catch (Exception e) {
             return new Response(false);
         }
+    }
+
+    /**
+     * Checks if mailAddress is already taken.
+     *
+     * @param mailAddress to verify
+     * @return true if mailAddress taken
+     */
+    public boolean mailAlreadyTaken(String mailAddress) {
+       // loops through accounts
+        for(Map.Entry<Integer, Account> entry : accounts.entrySet()) {
+            Account account = entry.getValue();
+
+            // if mail matches return true
+            if (account.getMailAddress().equals(mailAddress)) {
+                return true;
+            }
+        }
+
+        // if not account's mailAddress matches, return false
+        return false;
     }
 
     /**
