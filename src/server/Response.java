@@ -7,7 +7,8 @@ public class Response {
 
     /**
      * Constructor for a response.
-     * @param success
+     *
+     * @param success success of request
      */
     public Response(boolean success) {
         this.success = success;
@@ -15,8 +16,9 @@ public class Response {
 
     /**
      * Constructor for a response with data.
-     * @param success
-     * @param data
+     *
+     * @param success success of request
+     * @param data response data
      */
     public Response(boolean success, String[] data) {
         this.success = success;
@@ -25,7 +27,8 @@ public class Response {
 
     /**
      * Returns a response string for the request.
-     * @return
+     *
+     * @return responseString
      */
     public String toString() {
         // If the response has data, join it with a |, otherwise leave blank.

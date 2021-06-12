@@ -5,8 +5,6 @@ import server.Account;
 import server.Model;
 import server.TodoItem;
 
-import java.util.Arrays;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ModelTest {

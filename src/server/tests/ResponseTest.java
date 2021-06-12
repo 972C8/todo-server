@@ -7,8 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ResponseTest {
 
+    private String responseStringTrue, responseStringFalse, responseStringWithData1, responseStringWithData2;
+
     @BeforeEach
     void setUp() {
+        responseStringTrue = "Result|true\n";
+        responseStringFalse = "Result|false\n";
+        responseStringWithData1 = "Result|false|A\n";
+        responseStringWithData2 = "Result|false|A|B\n";
     }
 
     @AfterEach
@@ -20,20 +26,19 @@ public class ResponseTest {
         Response responseTrue = new Response(true);
         Response responseFalse = new Response(false);
 
-        String responseTrueString = "Result|true\n";
-        String responseFalseString = "Result|false\n";
-
-
-        assertEquals(responseTrue.toString(), responseTrueString);
-        assertEquals(responseFalse.toString(), responseFalseString);
+        assertEquals(responseTrue.toString(), responseStringTrue);
+        assertEquals(responseFalse.toString(), responseStringFalse);
     }
 
     @Test
     void createResponseWithData() {
-        String[] responseData = {"A", "B"};
-        Response response = new Response(true, responseData);
-        String responseString = "Result|true|A|B\n";
+        String[] responseData1 = {"A"};
+        String[] responseData2 = {"A", "B"};
 
-        assertEquals(response.toString(), responseString);
+        Response response1 = new Response(true, responseData1);
+        Response response2 = new Response(true, responseData2);
+
+        assertEquals(response1.toString(), responseStringWithData1);
+        assertEquals(response2.toString(), responseStringWithData2);
     }
 }
