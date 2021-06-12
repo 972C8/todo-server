@@ -18,7 +18,7 @@ class ModelTest {
         model = new Model();
 
         //create login for all methods to use
-        String[] loginData = {"mail", "pass"};
+        String[] loginData = {"mail@domain.tld", "pass"};
         model.createLogin(loginData);
         Response response = model.login(loginData);
         token = response.getData()[0];
@@ -48,8 +48,8 @@ class ModelTest {
 
     @Test
     void createLogin() {
-        String[] login = {"mail1", "pass1"};
-        String[] loginWrong = {"mail", "pass"};
+        String[] login = {"mail1@domain.tld", "pass1"};
+        String[] loginWrong = {"mail@domain.tld", "pass"};
         assertTrue(model.createLogin(login).isSuccess());
         assertFalse(model.createLogin(loginWrong).isSuccess());
     }
@@ -57,9 +57,9 @@ class ModelTest {
     @Test
     void login() {
 
-        String[] log = {"mail", "pass"};
-        String[] passWrong = {"mail", "passWRONG"};
-        String[] mailWrong = {"mailWRONG", "pass"};
+        String[] log = {"mail@domain.tld", "pass"};
+        String[] passWrong = {"mail@domain.tld", "passWRONG"};
+        String[] mailWrong = {"mailWRONG@domain.tld", "pass"};
 
         //Must return true as login is valid
         assertTrue(model.login(log).isSuccess());
@@ -72,7 +72,7 @@ class ModelTest {
     @Test
     void logout() {
         String[] token = {this.token};
-        String[] tokenWrong = {"mailWRONG"};
+        String[] tokenWrong = {"randomToken"};
 
         assertTrue(model.logout(token).isSuccess());
         assertFalse(model.logout(tokenWrong).isSuccess());
@@ -80,8 +80,8 @@ class ModelTest {
 
     @Test
     void changePassword() {
-        String[] logNew = {"mail", "passNEW"};
-        String[] passWrong = {"mail", "passWRONG"};
+        String[] logNew = {"mail@domain.tld", "passNEW"};
+        String[] passWrong = {"mail@domain.tld", "passWRONG"};
 
         //token, new password
         String[] newPass = {this.token, "passNEW"};
@@ -91,9 +91,9 @@ class ModelTest {
         assertTrue(model.login(logNew).isSuccess());
         assertFalse(model.login(passWrong).isSuccess());
 
-        String[] log1 = {"mail1", "pass1"};
-        String[] log5 = {"mail5", "pass5"};
-        String[] log10 = {"mail10", "pass10"};
+        String[] log1 = {"mail1@domain.tld", "pass1"};
+        String[] log5 = {"mail5@domain.tld", "pass5"};
+        String[] log10 = {"mail10@domain.tld", "pass10"};
 
         model.createLogin(log1);
         model.createLogin(log5);
@@ -101,6 +101,30 @@ class ModelTest {
 
         assertTrue(model.login(log5).isSuccess());
         assertTrue(model.changePassword(newPass).isSuccess());
+    }
+
+    @Test
+    void validMailAddress() {
+        String mailValid = "user@example.com";
+        String mailInvalid1 = "user";
+        String mailInvalid2 = "user@example";
+        String mailInvalid3 = "example.com";
+
+        assertTrue(Model.validMailAddress(mailValid));
+        assertFalse(Model.validMailAddress(mailInvalid1));
+        assertFalse(Model.validMailAddress(mailInvalid2));
+        assertFalse(Model.validMailAddress(mailInvalid3));
+    }
+
+    @Test
+    void validPassword() {
+        String passValid = "password";
+        String passInvalid1 = "12";
+        String passInvalid2 = "123456789012345678901";
+
+        assertTrue(Model.validPassword(passValid));
+        assertFalse(Model.validPassword(passInvalid1));
+        assertFalse(Model.validPassword(passInvalid2));
     }
 
     @Test

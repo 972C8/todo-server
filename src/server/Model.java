@@ -111,11 +111,14 @@ public class Model {
             String mailAddress = requestData[0];
             String password = requestData[1];
 
+            // Validate mailAddress
+            if (!validMailAddress(mailAddress)) return new Response(false);
+
+            // Validate password
+            if (!validPassword(password)) return new Response(false);
+
             // If mailAddress is already taken, return false
             if (mailAlreadyTaken(mailAddress)) return new Response(false);
-
-            //TODO: Fails if name already taken, or invalid
-            //TODO: Check mail and password for correctness (regex), return false if incorrect
 
             Account account = new Account(mailAddress, password);
             accounts.put(account.getId(), account);
@@ -124,27 +127,6 @@ public class Model {
         } catch (Exception e) {
             return new Response(false);
         }
-    }
-
-    /**
-     * Checks if mailAddress is already taken.
-     *
-     * @param mailAddress to verify
-     * @return true if mailAddress taken
-     */
-    public boolean mailAlreadyTaken(String mailAddress) {
-       // loops through accounts
-        for(Map.Entry<Integer, Account> entry : accounts.entrySet()) {
-            Account account = entry.getValue();
-
-            // if mail matches return true
-            if (account.getMailAddress().equals(mailAddress)) {
-                return true;
-            }
-        }
-
-        // if not account's mailAddress matches, return false
-        return false;
     }
 
     /**
@@ -234,6 +216,9 @@ public class Model {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 
+                // Validate password
+                if (!validPassword(newPassword)) return new Response(false);
+
                 //Set new password
                 account.setPassword(newPassword);
                 return new Response(true);
@@ -245,8 +230,58 @@ public class Model {
     }
 
     /**
+     * Validates if given string is valid mailAddress.
+     * Has to conform to the RFC 5322 standard.
+     * <p>
+     * References:
+     * - https://tools.ietf.org/html/rfc5322
+     * - https://stackoverflow.com/questions/201323/how-to-validate-an-email-address-using-a-regular-expression
+     *
+     * @param mailAddress string to be validated
+     * @return boolean
+     */
+    public static boolean validMailAddress(String mailAddress) {
+        String regex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])";
+        return mailAddress.matches(regex);
+    }
+
+    /**
+     * Validates if given string is valid password.
+     * Must be 3-20 characters.
+     *
+     * @param password 3-20 character string
+     * @return boolean
+     */
+    public static boolean validPassword(String password) {
+        int length = password.length();
+        return (length >= 3 && length <= 20);
+    }
+
+    /**
+     * Checks if mailAddress is already taken.
+     *
+     * @param mailAddress to verify
+     * @return true if mailAddress taken
+     */
+    public static boolean mailAlreadyTaken(String mailAddress) {
+        // loops through accounts
+        for(Map.Entry<Integer, Account> entry : accounts.entrySet()) {
+            Account account = entry.getValue();
+
+            // if mail matches return true
+            if (account.getMailAddress().equals(mailAddress)) {
+                return true;
+            }
+        }
+
+        // if not account's mailAddress matches, return false
+        return false;
+    }
+
+    /**
      * Generates a new token (random hexadecimal string).
      * Length is defined in constant tokenLength.
+     *
      * @return new token
      */
     public static String generateToken() {
