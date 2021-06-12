@@ -128,6 +128,47 @@ class ModelTest {
     }
 
     @Test
+    void validTitle() {
+        String titleValid1 = "123";
+        String titleValid2 = "12345678901234567890";
+        String titleValid3 = "New Title";
+        String titleInvalid = "123456789012345678901";
+
+        assertTrue(Model.validTitle(titleValid1));
+        assertTrue(Model.validTitle(titleValid2));
+        assertTrue(Model.validTitle(titleValid3));
+        assertFalse(Model.validTitle(titleInvalid));
+    }
+
+    @Test
+    void validDescription() {
+        String descriptionValid1 = "";
+        String descriptionValid2 = "Description";
+        String descriptionValid3 = "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345";
+        String descriptionInvalid = "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456";
+
+        assertTrue(Model.validDescription(descriptionValid1));
+        assertTrue(Model.validDescription(descriptionValid2));
+        assertTrue(Model.validDescription(descriptionValid3));
+        assertFalse(Model.validDescription(descriptionInvalid));
+    }
+
+    @Test
+    void validPriority() {
+        String prioValid1 = "low";
+        String prioValid2 = "Medium";
+        String prioValid3 = "HIGH";
+        String prioInvalid1 = "1";
+        String prioInvalid2 = "default";
+
+        assertTrue(Model.validPriority(prioValid1));
+        assertTrue(Model.validPriority(prioValid2));
+        assertTrue(Model.validPriority(prioValid3));
+        assertFalse(Model.validPriority(prioInvalid1));
+        assertFalse(Model.validPriority(prioInvalid2));
+    }
+
+    @Test
     void generateToken() {
         String token = Model.generateToken();
         int expectedLength = Model.getTokenLength();

@@ -316,6 +316,10 @@ public class Model {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 
+                if (!validTitle(title)) return new Response(false);
+                if (!validDescription(description)) return new Response(false);
+                if (!validPriority(priority)) return new Response(false);
+
                 TodoItem item = new TodoItem(title, description, priority);
                 account.addTodoItem(item);
 
@@ -421,6 +425,48 @@ public class Model {
         } catch (Exception e) {
             return new Response(false);
         }
+    }
+
+    /**
+     * Validates if given string is valid title.
+     * Must be 3-20 characters.
+     *
+     * @param title 3-20 character string
+     * @return boolean
+     */
+    public static boolean validTitle(String title) {
+        int length = title.length();
+        return (length >= 3 && length <= 20);
+    }
+
+    /**
+     * Validates if given string is valid description.
+     * Must be 0-255 characters.
+     *
+     * @param description 0-255 character string
+     * @return boolean
+     */
+    public static boolean validDescription(String description) {
+        int length = description.length();
+        return length <= 255;
+    }
+
+    /**
+     * Validates if given string is valid priority.
+     * Case insensitive. Must be low, medium or high.
+     *
+     * @param priorityString low, medium or high - case insensitive
+     * @return boolean
+     */
+    public static boolean validPriority(String priorityString) {
+        priorityString = priorityString.toUpperCase();
+        for (TodoItem.Priority priority : TodoItem.Priority.values()) {
+            if (priority.name().equals(priorityString)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

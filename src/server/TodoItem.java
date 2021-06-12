@@ -28,7 +28,7 @@ public class TodoItem {
     public TodoItem(String title, String description, String priority) {
         this.title = title;
         this.description = description;
-        this.priority = Priority.valueOf(priority);
+        this.priority = Priority.valueOf(priority.toUpperCase());
 
         //Increment id for every new item
         this.id = nextId++;
