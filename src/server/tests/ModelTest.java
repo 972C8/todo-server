@@ -178,8 +178,10 @@ class ModelTest {
 
     @Test
     void createToDo() {
-        String[] todo = {this.token, "title", "HIGH", "description"};
-        assertTrue(model.createToDo(todo).isSuccess());
+        String[] todo1 = {this.token, "title", "HIGH", "description"};
+        String[] todo2 = {this.token, "title2", "low", ""};
+        assertTrue(model.createToDo(todo1).isSuccess());
+        assertTrue(model.createToDo(todo2).isSuccess());
     }
 
     /**

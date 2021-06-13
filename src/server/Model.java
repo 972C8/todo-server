@@ -309,7 +309,7 @@ public class Model {
             String token = requestData[0];
             String title = requestData[1];
             String priority = requestData[2];
-            String description = requestData[3];
+            String description = (requestData.length >= 4) ? requestData[3] : "";
 
             //Verify token and create item
             if (verifyToken(token)) {
