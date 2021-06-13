@@ -25,8 +25,8 @@ public class Model {
      * @param token
      * @return true if token is valid
      */
-    private boolean verifyToken(String token) {
-        return token != null && tokens.containsKey(token);
+    private boolean verifyToken(String token, String sessionToken) {
+        return token != null && token.equals(sessionToken);
     }
 
     /**
@@ -71,7 +71,7 @@ public class Model {
      * @param requestData can include a token
      * @return Response containing true or false
      */
-    public Response ping(String[] requestData) {
+    public Response ping(String[] requestData, String sessionToken) {
         try {
             //Return true if no paramaters are provided
             //Default behaviour as connection was already successfully established
@@ -86,7 +86,7 @@ public class Model {
 
             //Verify token and return true if valid
             String token = requestData[0];
-            if (verifyToken(token)) {
+            if (verifyToken(token, sessionToken)) {
                 return new Response(true);
             }
 
@@ -166,34 +166,20 @@ public class Model {
     /**
      * Logout user. Invalidates the token
      *
-     * @param requestData the token to invalidate
-     * @return Response containing true if user was successfully logged out
+     * @param sessionToken the token to invalidate
+     * @return Response always true, never fails
      */
-    public Response logout(String[] requestData) {
-        try {
-            //Only one parameter (token) allowed
-            if (requestData == null || requestData.length > 1) {
-                return new Response(false);
-            }
-            String token = requestData[0];
+    public Response logout(String sessionToken) {
 
-            //Verify token and return true if valid
-            if (verifyToken(token)) {
-
-                //Invalidate token
-                tokens.remove(token);
-
-                //Export data
-                logger.info("Logout occurred. Data export initialized.");
-                writeData();
-
-                return new Response(true);
-            }
-            //Token was invalid
-            return new Response(false);
-        } catch (Exception e) {
-            return new Response(false);
+        if (tokens.containsKey(sessionToken)){
+            tokens.remove(sessionToken);
         }
+
+        //Export data
+        logger.info("Logout occurred. Data export initialized.");
+        writeData();
+
+        return new Response(true);
     }
 
     /**
@@ -202,7 +188,7 @@ public class Model {
      * @param requestData is the new password
      * @return true if password was changed successfully
      */
-    public Response changePassword(String[] requestData) {
+    public Response changePassword(String[] requestData, String sessionToken) {
         try {
             //Only two parameters allowed
             if (requestData == null || requestData.length > 2) {
@@ -212,7 +198,7 @@ public class Model {
             String newPassword = requestData[1];
 
             //Verify token and set password
-            if (verifyToken(token)) {
+            if (verifyToken(token, sessionToken)) {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 
@@ -300,7 +286,7 @@ public class Model {
      * @param requestData the content of the item to be created
      * @return true if to do item is created and added successfully
      */
-    public Response createToDo(String[] requestData) {
+    public Response createToDo(String[] requestData, String sessionToken) {
         try {
             //Only 5 parameters allowed (5th is due date which is ignored)
             if (requestData == null || requestData.length > 5) {
@@ -312,7 +298,7 @@ public class Model {
             String description = (requestData.length >= 4) ? requestData[3] : "";
 
             //Verify token and create item
-            if (verifyToken(token)) {
+            if (verifyToken(token, sessionToken)) {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 
@@ -339,7 +325,7 @@ public class Model {
      * @param requestData of the item
      * @return the current account's TodoItem of the provided id
      */
-    public Response getToDo(String[] requestData) {
+    public Response getToDo(String[] requestData, String sessionToken) {
         try {
             //Only two parameters allowed
             if (requestData == null || requestData.length > 2) {
@@ -349,7 +335,7 @@ public class Model {
             String todoId = requestData[1];
 
             //Verify token and get item
-            if (verifyToken(token)) {
+            if (verifyToken(token, sessionToken)) {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 
@@ -371,7 +357,7 @@ public class Model {
      * @param requestData of the item
      * @return true if item was deleted
      */
-    public Response deleteToDo(String[] requestData) {
+    public Response deleteToDo(String[] requestData, String sessionToken) {
         try {
             //Only two parameters allowed
             if (requestData == null || requestData.length > 2) {
@@ -381,7 +367,7 @@ public class Model {
             String todoId = requestData[1];
 
             //Verify token and get item
-            if (verifyToken(token)) {
+            if (verifyToken(token, sessionToken)) {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 
@@ -401,7 +387,7 @@ public class Model {
      *
      * @return a HashMap containing the account's todos
      */
-    public Response listToDos(String[] requestData) {
+    public Response listToDos(String[] requestData, String sessionToken) {
         try {
             //Only one parameter allowed
             if (requestData == null || requestData.length > 1) {
@@ -410,7 +396,7 @@ public class Model {
             String token = requestData[0];
 
             //Verify token and get item
-            if (verifyToken(token)) {
+            if (verifyToken(token, sessionToken)) {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 

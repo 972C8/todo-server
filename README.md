@@ -20,6 +20,28 @@ In addition to the minimum requirements (4p), multiple optional features were im
 
 ![#f03c15](https://via.placeholder.com/15/f03c15/000000?text=+) Not Implemented ![#1589F0](https://via.placeholder.com/15/1589F0/000000?text=+) In Progress ![#c5f015](https://via.placeholder.com/15/c5f015/000000?text=+) Done
 
+## Message Types
+Implemented according to the specifications.
+
+### Requests
+| MessageType | Data | Requires Token |
+|-------------|------|----------------|
+| `CreateLogin` | `Username`, `Password` | No |
+| `Login` | `Username`, `Password` | No |
+| `ChangePassword` | `NewPassword` | Yes | 
+| `Logout` | | No |
+| `CreateToDo` | `Title`, `Priority`, `Description` | Yes |
+| `GetToDo` | `ID` | Yes |
+| `DeleteToDo` | `ID` | Yes |
+| `ListToDos` | | Yes |
+| `Ping` | [`Token`] | No |
+
+### Responses
+Data is an array of strings separated by `|` consisting of the response data of the command. Could be the data of a single ToDo or the token provided after login.
+
+| MessageType | Data |
+|-------------|------|
+| `Results` | `Success`, [`Data`] |
 ## Data Validation
 Request data sent by the user, is validated on the server to match the requirements specified in the project description. Below the respective requirements for each attribute are listed.
 
@@ -43,32 +65,6 @@ All passwords are hashed with SHA-512 and the usage of salts. A random byte sequ
 ## Tokens
 Every time the user performs a login, a random hexadecimal string (token) is generated, stored in the session and sent back to the user. For each subsequent request, the user has to provide the token which is compared to the token stored in the session. If valid, the commands are executed. 
 
-## Message Types
-Implemented according to the specifications.
-
-### Requests
-| MessageType | Data | Requires Token |
-|-------------|------|----------------|
-| `CreateLogin` | `Username`, `Password` | No |
-| `Login` | `Username`, `Password` | No |
-| `ChangePassword` | `NewPassword` | Yes | 
-| `Logout` | | No |
-| `CreateToDo` | `Title`, `Priority`, `Description` | Yes |
-| `GetToDo` | `ID` | Yes |
-| `DeleteToDo` | `ID` | Yes |
-| `ListToDos` | | Yes |
-| `Ping` | [`Token`] | No |
-
-### Responses
-Data is an array of strings separated by `|` consisting of the response data of the command. Could be the data of a single ToDo or the token provided after login.
-
-| MessageType | Data |
-|-------------|------|
-| `Results` | `Success`, [`Data`] |
-
-## Account Management
-* TODO: ?
-    
 ## Save and restore data
 * Based on [GsonUtility](https://github.com/972C8/GsonUtility) written by us
 * Main code found in ReadWriteData.java

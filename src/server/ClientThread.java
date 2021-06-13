@@ -12,6 +12,8 @@ public class ClientThread extends Thread {
     private Socket socket;
     private static Model model = new Model();
 
+    private String sessionToken;
+
     public ClientThread(Socket socket) {
         super("Client#" + clientNumber++);
         this.socket = socket;
@@ -74,31 +76,38 @@ public class ClientThread extends Thread {
         // Switch between allowed messageTypes, otherwise return negative response
         switch (messageType) {
             case "Ping":
-                response = model.ping(requestData);
+                response = model.ping(requestData, sessionToken);
                 break;
             case "CreateLogin":
                 response = model.createLogin(requestData);
                 break;
             case "Login":
                 response = model.login(requestData);
+
+                // store token in session
+                if (response.isSuccess()) sessionToken = response.getData()[0];
+
                 break;
             case "ChangePassword":
-                response = model.changePassword(requestData);
+                response = model.changePassword(requestData, sessionToken);
                 break;
             case "CreateToDo":
-                response = model.createToDo(requestData);
+                response = model.createToDo(requestData, sessionToken);
                 break;
             case "GetToDo":
-                response = model.getToDo(requestData);
+                response = model.getToDo(requestData, sessionToken);
                 break;
             case "DeleteToDo":
-                response = model.deleteToDo(requestData);
+                response = model.deleteToDo(requestData, sessionToken);
                 break;
             case "ListToDos":
-                response = model.listToDos(requestData);
+                response = model.listToDos(requestData, sessionToken);
                 break;
             case "Logout":
-                response = model.logout(requestData);
+                response = model.logout(sessionToken);
+
+                // reset token in session
+                sessionToken = "";
                 break;
             default:
                 response = new Response(false);

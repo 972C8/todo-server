@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ModelTest {
 
     private Model model;
-    private String token;
+    private String sessionToken;
 
     @BeforeEach
     void setUp() {
@@ -21,7 +21,7 @@ class ModelTest {
         String[] loginData = {"mail@domain.tld", "pass"};
         model.createLogin(loginData);
         Response response = model.login(loginData);
-        token = response.getData()[0];
+        sessionToken = response.getData()[0];
     }
 
     @AfterEach
@@ -71,11 +71,11 @@ class ModelTest {
 
     @Test
     void logout() {
-        String[] token = {this.token};
-        String[] tokenWrong = {"randomToken"};
+        String token = sessionToken;
+        String tokenWrong = "randomToken";
 
         assertTrue(model.logout(token).isSuccess());
-        assertFalse(model.logout(tokenWrong).isSuccess());
+        assertTrue(model.logout(tokenWrong).isSuccess());
     }
 
     @Test
@@ -84,10 +84,10 @@ class ModelTest {
         String[] passWrong = {"mail@domain.tld", "passWRONG"};
 
         //token, new password
-        String[] newPass = {this.token, "passNEW"};
+        String[] newPass = {sessionToken, "passNEW"};
 
         //change password and try login with new password
-        assertTrue(model.changePassword(newPass).isSuccess());
+        assertTrue(model.changePassword(newPass, sessionToken).isSuccess());
         assertTrue(model.login(logNew).isSuccess());
         assertFalse(model.login(passWrong).isSuccess());
 
@@ -100,7 +100,7 @@ class ModelTest {
         model.createLogin(log10);
 
         assertTrue(model.login(log5).isSuccess());
-        assertTrue(model.changePassword(newPass).isSuccess());
+        assertTrue(model.changePassword(newPass, sessionToken).isSuccess());
     }
 
     @Test
@@ -178,86 +178,86 @@ class ModelTest {
 
     @Test
     void createToDo() {
-        String[] todo1 = {this.token, "title", "HIGH", "description"};
-        String[] todo2 = {this.token, "title2", "low", ""};
-        assertTrue(model.createToDo(todo1).isSuccess());
-        assertTrue(model.createToDo(todo2).isSuccess());
+        String[] todo1 = {sessionToken, "title", "HIGH", "description"};
+        String[] todo2 = {sessionToken, "title2", "low", ""};
+        assertTrue(model.createToDo(todo1, sessionToken).isSuccess());
+        assertTrue(model.createToDo(todo2, sessionToken).isSuccess());
     }
 
     /**
      * Create some to do items to test them
      */
     void prepareToDoItems() {
-        String[] todo1 = {this.token, "todo1", "HIGH", "description1"};
-        String[] todo2 = {this.token, "todo2", "Medium", "description2"};
-        String[] todo3 = {this.token, "todo3", "low", "description3"};
+        String[] todo1 = {sessionToken, "todo1", "HIGH", "description1"};
+        String[] todo2 = {sessionToken, "todo2", "Medium", "description2"};
+        String[] todo3 = {sessionToken, "todo3", "low", "description3"};
 
-        assertTrue(model.createToDo(todo1).isSuccess());
-        assertTrue(model.createToDo(todo2).isSuccess());
-        assertTrue(model.createToDo(todo3).isSuccess());
+        assertTrue(model.createToDo(todo1, sessionToken).isSuccess());
+        assertTrue(model.createToDo(todo2, sessionToken).isSuccess());
+        assertTrue(model.createToDo(todo3, sessionToken).isSuccess());
     }
 
     @Test
     void getToDo() {
         prepareToDoItems();
 
-        String[] item1 = {this.token, "1"};
-        String[] item2 = {this.token, "2"};
-        String[] item3 = {this.token, "3"};
+        String[] item1 = {sessionToken, "1"};
+        String[] item2 = {sessionToken, "2"};
+        String[] item3 = {sessionToken, "3"};
 
-        assertTrue(model.getToDo(item1).isSuccess());
-        assertNotNull(model.getToDo(item1).getData());
+        assertTrue(model.getToDo(item1, sessionToken).isSuccess());
+        assertNotNull(model.getToDo(item1, sessionToken).getData());
 
-        assertEquals("1", model.getToDo(item1).getData()[0]);
-        assertEquals("todo1", model.getToDo(item1).getData()[1]);
-        assertEquals("High", model.getToDo(item1).getData()[2]);
-        assertEquals("description1", model.getToDo(item1).getData()[3]);
+        assertEquals("1", model.getToDo(item1, sessionToken).getData()[0]);
+        assertEquals("todo1", model.getToDo(item1, sessionToken).getData()[1]);
+        assertEquals("High", model.getToDo(item1, sessionToken).getData()[2]);
+        assertEquals("description1", model.getToDo(item1, sessionToken).getData()[3]);
 
-        assertEquals("2", model.getToDo(item2).getData()[0]);
-        assertEquals("todo2", model.getToDo(item2).getData()[1]);
-        assertEquals("Medium", model.getToDo(item2).getData()[2]);
-        assertEquals("description2", model.getToDo(item2).getData()[3]);
+        assertEquals("2", model.getToDo(item2, sessionToken).getData()[0]);
+        assertEquals("todo2", model.getToDo(item2, sessionToken).getData()[1]);
+        assertEquals("Medium", model.getToDo(item2, sessionToken).getData()[2]);
+        assertEquals("description2", model.getToDo(item2, sessionToken).getData()[3]);
 
-        assertEquals("3", model.getToDo(item3).getData()[0]);
-        assertEquals("todo3", model.getToDo(item3).getData()[1]);
-        assertEquals("Low", model.getToDo(item3).getData()[2]);
-        assertEquals("description3", model.getToDo(item3).getData()[3]);
+        assertEquals("3", model.getToDo(item3, sessionToken).getData()[0]);
+        assertEquals("todo3", model.getToDo(item3, sessionToken).getData()[1]);
+        assertEquals("Low", model.getToDo(item3, sessionToken).getData()[2]);
+        assertEquals("description3", model.getToDo(item3, sessionToken).getData()[3]);
     }
 
     @Test
     void deleteToDo() {
-        String[] token = {this.token};
-        String[] item2 = {this.token, "2"};
+        String[] token = {sessionToken};
+        String[] item2 = {sessionToken, "2"};
         String[] itemFalse = {"-3"};
 
         prepareToDoItems();
 
         //Check how many items exist before deleting one
-        assertEquals(3, model.listToDos(token).getData().length);
+        assertEquals(3, model.listToDos(token, sessionToken).getData().length);
 
-        assertNotNull(model.getToDo(item2));
-        assertTrue(model.deleteToDo(item2).isSuccess());
+        assertNotNull(model.getToDo(item2, sessionToken));
+        assertTrue(model.deleteToDo(item2, sessionToken).isSuccess());
 
         //Check how many items exist after deleting one
-        assertEquals(2, model.listToDos(token).getData().length);
+        assertEquals(2, model.listToDos(token, sessionToken).getData().length);
 
-        assertFalse(model.getToDo(item2).isSuccess());
-        assertFalse(model.deleteToDo(itemFalse).isSuccess());
+        assertFalse(model.getToDo(item2, sessionToken).isSuccess());
+        assertFalse(model.deleteToDo(itemFalse, sessionToken).isSuccess());
 
     }
 
     @Test
     void listToDos() {
-        String[] token = {this.token};
+        String[] requestData = {sessionToken};
 
-        assertFalse(model.listToDos(null).isSuccess());
+        assertFalse(model.listToDos(null, sessionToken).isSuccess());
 
         prepareToDoItems();
 
-        assertTrue(model.listToDos(token).isSuccess());
-        assertNotNull(model.listToDos(token).getData());
+        assertTrue(model.listToDos(requestData, sessionToken).isSuccess());
+        assertNotNull(model.listToDos(requestData, sessionToken).getData());
 
-        assertEquals(3, model.listToDos(token).getData().length);
+        assertEquals(3, model.listToDos(requestData, sessionToken).getData().length);
 
     }
 }
