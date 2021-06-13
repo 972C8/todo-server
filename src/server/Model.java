@@ -385,7 +385,6 @@ public class Model {
                 //Get account from provided token
                 Account account = getAccountByToken(token);
 
-                //TODO: check if id exists for this user
                 boolean itemDeleted = account.deleteTodoItem(Integer.parseInt(todoId));
                 if (itemDeleted) {
                     return new Response(true);

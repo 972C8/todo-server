@@ -187,8 +187,8 @@ class ModelTest {
      */
     void prepareToDoItems() {
         String[] todo1 = {this.token, "todo1", "HIGH", "description1"};
-        String[] todo2 = {this.token, "todo2", "MEDIUM", "description2"};
-        String[] todo3 = {this.token, "todo3", "LOW", "description3"};
+        String[] todo2 = {this.token, "todo2", "Medium", "description2"};
+        String[] todo3 = {this.token, "todo3", "low", "description3"};
 
         assertTrue(model.createToDo(todo1).isSuccess());
         assertTrue(model.createToDo(todo2).isSuccess());
@@ -199,17 +199,27 @@ class ModelTest {
     void getToDo() {
         prepareToDoItems();
 
-         String[] item1 = {this.token, "1"};
+        String[] item1 = {this.token, "1"};
         String[] item2 = {this.token, "2"};
+        String[] item3 = {this.token, "3"};
 
         assertTrue(model.getToDo(item1).isSuccess());
         assertNotNull(model.getToDo(item1).getData());
 
-        //TODO: test content of response data correctly
-        /*
-        assertEquals(TodoItem.Priority.HIGH, model.getToDo(item1).getData());
-        assertNotEquals(TodoItem.Priority.HIGH, model.getToDo(2).getPriority());
-        */
+        assertEquals("1", model.getToDo(item1).getData()[0]);
+        assertEquals("todo1", model.getToDo(item1).getData()[1]);
+        assertEquals("High", model.getToDo(item1).getData()[2]);
+        assertEquals("description1", model.getToDo(item1).getData()[3]);
+
+        assertEquals("2", model.getToDo(item2).getData()[0]);
+        assertEquals("todo2", model.getToDo(item2).getData()[1]);
+        assertEquals("Medium", model.getToDo(item2).getData()[2]);
+        assertEquals("description2", model.getToDo(item2).getData()[3]);
+
+        assertEquals("3", model.getToDo(item3).getData()[0]);
+        assertEquals("todo3", model.getToDo(item3).getData()[1]);
+        assertEquals("Low", model.getToDo(item3).getData()[2]);
+        assertEquals("description3", model.getToDo(item3).getData()[3]);
     }
 
     @Test

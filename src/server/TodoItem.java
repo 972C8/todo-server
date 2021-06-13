@@ -20,7 +20,7 @@ public class TodoItem {
             this.priority = priority;
         }
 
-        public String getPriority() {
+        public String toString() {
             return priority;
         }
     }
